@@ -1,0 +1,28 @@
+{
+  "name": "calendar-activities",
+  "version": "1.0.0",
+  "description": "Demo for ReactNative and Firebase backend.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy": "npm --prefix vue run build && firebase deploy",
+    "deploy:db": "firebase deploy --only firestore",
+    "deploy:functions": "firebase deploy --only functions",
+    "deploy:functions-env": "node firebase-env.js",
+    "deploy:hosting": "firebase deploy --only hosting",
+    "serve:local": "npm run build && serve -s dist",
+    "start": "npm run serve"
+
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rstar2/calendar-activities.git"
+  },
+  "keywords": [],
+  "author": "Rumen Neshev <rstardev@abv.bg>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rstar2/calendar-activities/issues"
+  },
+  "homepage": "https://github.com/rstar2/calendar-activities#readme"
+}
