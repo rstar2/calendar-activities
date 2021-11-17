@@ -18,15 +18,15 @@ workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
 // so it will cause the service-worker file to be changes - update will be fired.
 // So when there's update the 'registerServiceWorker.js' will notify the user and if user confirms
 // it will post 'SKIP_WAITING' type even to this waiting service-worker and here it just 'activates' it by calling skipWaiting
-self.addEventListener('message', event => {
-  console.log('[Service Worker] Message Received.');
+self.addEventListener("message", (event) => {
+  console.log("[Service Worker] Message Received.");
   const replyPort = event.ports[0];
   const message = event.data;
-  if (replyPort && message && message.type === 'SKIP_WAITING') {
+  if (replyPort && message && message.type === "SKIP_WAITING") {
     event.waitUntil(
       self.skipWaiting().then(
         () => replyPort.postMessage({ error: null }),
-        error => replyPort.postMessage({ error })
+        (error) => replyPort.postMessage({ error })
       )
     );
   }
@@ -53,8 +53,10 @@ self.addEventListener('message', event => {
 // Give the service worker access to Firebase Messaging.
 // Note that you can only use Firebase Messaging here, other Firebase libraries
 // are not available in the service worker.
-importScripts('https://www.gstatic.com/firebasejs/7.17.1/firebase-app.js');
-importScripts('https://www.gstatic.com/firebasejs/7.17.1/firebase-messaging.js');
+importScripts("https://www.gstatic.com/firebasejs/7.17.1/firebase-app.js");
+importScripts(
+  "https://www.gstatic.com/firebasejs/7.17.1/firebase-messaging.js"
+);
 
 // // Pass these as env variables (they are not "private" info but like this its not very scalable/customizable as source for another app)
 // // For this a webpack plugin is used to add the env variables to this created on build 'service-worker-env.js' file

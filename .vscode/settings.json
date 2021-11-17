@@ -3,5 +3,13 @@
         "activityBar.background": "#2E2E22",
         "titleBar.activeBackground": "#404130",
         "titleBar.activeForeground": "#FAFAF9"
-    }
+    },
+
+    // this will allow using multiple eslint instances,
+    // each directory could have its own plugins, configs and etc... (./vue/ some, ./react-native/ others)
+    "eslint.workingDirectories": [
+        ".",
+        "./vue",
+      ],
+      v
 }

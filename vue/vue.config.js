@@ -1,15 +1,43 @@
+const fs = require("fs");
+const path = require("path");
+
 // const DumpVueEnvVarsWebpackPlugin = require('./DumpVueEnvVarsWebpackPlugin');
 
+// simulate loading of the .env files as would the vue-cli-service
+// do if they were in the vue app root folder:
+//    .env                # loaded in all cases
+//    .env.local          # loaded in all cases, ignored by git
+//    .env.[mode]         # only loaded in specified mode
+//    .env.[mode].local   # only loaded in specified mode, ignored by git
+
+const dotenv = require("dotenv");
+const files = ["../.env", "../.env.local"];
+if (process.env.NODE_ENV === "production") {
+  files.push("../.env.production", "../.env.production.local");
+}
+
+files
+  .map((file) => path.resolve(__dirname, file))
+  .filter((file) => fs.existsSync(file))
+  .forEach((file) => {
+    const envConfig = dotenv.parse(fs.readFileSync(file));
+    if (envConfig) {
+      for (const k in envConfig) {
+        process.env[k] = envConfig[k];
+      }
+    }
+  });
+
 module.exports = {
-  transpileDependencies: ['vuetify'],
+  transpileDependencies: ["vuetify"],
   pwa: {
     // NOTE: match these with the ones written in 'public/manifest.json'
     // These are for Apple iOS
-    name: 'My App',
-    themeColor: '#FFFFFF',
-    msTileColor: '#AAAAAA',
-    appleMobileWebAppCapable: 'yes',
-    appleMobileWebAppStatusBarStyle: 'black',
+    name: "My App",
+    themeColor: "#FFFFFF",
+    msTileColor: "#AAAAAA",
+    appleMobileWebAppCapable: "yes",
+    appleMobileWebAppStatusBarStyle: "black",
 
     // configure the workbox plugin
     // NOTE: See https://developers.google.com/web/tools/workbox/modules/workbox-webpack-plugin#which_plugin_to_use
@@ -19,17 +47,17 @@ module.exports = {
     //     3.You DON'T want to use other Service Worker features (i.e. Web Push).
     //     4.You DON'T want to import additional scripts or add additional logic.
     // So 'InjectManifest' gives much more control
-    workboxPluginMode: 'InjectManifest',
+    workboxPluginMode: "InjectManifest",
     workboxOptions: {
       // swSrc is required in InjectManifest mode.
-      swSrc: 'src/service-worker.js'
+      swSrc: "src/service-worker.js",
       // ...other Workbox options...
-    }
+    },
   },
-//   configureWebpack: {
-//     plugins: [
-//       // dump/export the env variables
-//       new DumpVueEnvVarsWebpackPlugin({ filename: 'service-worker-env.js' })
-//     ]
-//   }
+  //   configureWebpack: {
+  //     plugins: [
+  //       // dump/export the env variables
+  //       new DumpVueEnvVarsWebpackPlugin({ filename: 'service-worker-env.js' })
+  //     ]
+  //   }
 };
