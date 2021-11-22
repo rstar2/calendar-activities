@@ -1,3 +1,7 @@
-Demo for ReactNative and Firebase backend.
+# Demo for ReactNative and Firebase backend.
 
-First start with my loved Vue
+## First start with my loved Vue
+
+- Deploy with ```npm run deploy```
+
+

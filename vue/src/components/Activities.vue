@@ -12,13 +12,13 @@
         </v-list-item-title>
       </v-list-item-content>
 
-      <v-list-item-icon @click="increment(activity)">
-        <v-btn icon>
+      <v-list-item-icon>
+        <v-btn icon @click="increment(activity)" :disabled="isDisabled(activity)">
           <v-icon>mdi-numeric-positive-1</v-icon>
         </v-btn>
       </v-list-item-icon>
-      <v-list-item-icon @click="reset(activity)">
-        <v-btn icon>
+      <v-list-item-icon>
+        <v-btn icon @click="reset(activity)" :disabled="isDisabled(activity)">
           <v-icon>mdi-restore</v-icon>
         </v-btn>
       </v-list-item-icon>
@@ -29,6 +29,11 @@
 <script>
 import { mapState } from "vuex";
 export default {
+  data() {
+    return {
+      updating: {},
+    };
+  },
   computed: {
     ...mapState(["users", "activities"]),
   },
@@ -45,21 +50,34 @@ export default {
       }
       return "mdi-gesture-tap-button";
     },
-
     /**
-     * @param {string} id
+     * @param
      */
-    reset({ id }) {
-      console.log("reset", id);
-      this.$store.dispatch("activityReset", id);
+    isDisabled({ id }) {
+      return !!this.updating[id];
     },
 
     /**
      * @param {string} id
      */
-    increment({ id }) {
+    async reset({ id }) {
+      console.log("reset", id);
+
+      // this.updating[id] = true; is not reactive so use: Vue.set() or this.$set
+      this.$set(this.updating, id, true);
+      await this.$store.dispatch("activityReset", id);
+      this.$set(this.updating, id, false);
+    },
+
+    /**
+     * @param {string} id
+     */
+    async increment({ id }) {
       console.log("increment", id);
-      this.$store.dispatch("activityIncrease", { id, count: 1 });
+
+      this.$set(this.updating, id, true);
+      await this.$store.dispatch("activityIncrease", { id, count: 1 });
+      this.$set(this.updating, id, false);
     },
   },
 };

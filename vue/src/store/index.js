@@ -55,6 +55,7 @@ const store = new Vuex.Store({
     },
 
     /**
+     * Set/replace all activities
      * @param {Vuex.State} state
      * @param {{id: string, name: string}[]} users
      */
@@ -63,12 +64,35 @@ const store = new Vuex.Store({
       state.users = users;
     },
     /**
+     * Set/replace all activities
      * @param {Vuex.State} state
-     * @param {{id: string, to: object}[]} activities
+     * @param {{id: string, current: number, total: number}[]} activities
      */
     activitiesSet(state, activities) {
       // set the activities
       state.activities = activities;
+    },
+
+    /**
+     * Update a specific activity
+     * @param {Vuex.State} state
+     * @param {{id: string, current: number, total: number}} activity
+     */
+    activityUpdate(state, activity) {
+      // update a specific activity
+      const { id } = activity;
+      const item = state.activities.find((item) => item.id === id);
+      if (item) {
+        // update/merge
+        Object.assign(item, activity);
+
+        // other ways
+        // this.todos[3].text = "changedItemProperty";
+        // Object.assign(this.todos[3], { text: "changedItemProperty" });
+        // Vue.set(this.todos, 3, { text: "changedItemProperty" });
+
+        // just a note: - state.activities[3] = { text: "changedItem" } will not work
+      }
     },
   },
   actions: {
@@ -100,7 +124,7 @@ const store = new Vuex.Store({
      * @return {Promise}
      */
     async activityReset(context, id) {
-      return db.activityReset(id);
+      await db.activityReset(id);
     },
 
     /**
@@ -111,7 +135,7 @@ const store = new Vuex.Store({
      * @return {Promise}
      */
     async activityIncrease(context, { id, count }) {
-      return db.activityIncrease(id, count);
+      await db.activityIncrease(id, count);
     },
   },
 });

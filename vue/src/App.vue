@@ -48,8 +48,13 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .spinner {
   height: 100%;
 }
+
+/* * {
+  background-color: var(--v-primary2-base);
+  color: var(--v-primary2Text-base);
+} */
 </style>

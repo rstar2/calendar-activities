@@ -15,6 +15,7 @@ const vapidPublicKey = process.env.VUE_APP_FIREBASE_VAPID_PUBLIC_KEY;
 export default (swReg) => {
   if (!vapidPublicKey || !swReg) {
     console.warn("Firebase Push Messaging is not available");
+    return;
   }
 
   console.log("Configure Firebase Push Messaging");

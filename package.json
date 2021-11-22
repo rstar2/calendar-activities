@@ -10,8 +10,8 @@
     "deploy:functions": "firebase deploy --only functions",
     "deploy:functions-env": "node firebase-env.js",
     "deploy:hosting": "firebase deploy --only hosting",
-    "serve:local": "npm run build && serve -s dist",
-    "start": "npm run serve"
+    "serve:local": "npm --prefix vue npm run build && serve -s dist",
+    "start": "npm --prefix vue npm run serve"
   },
   "repository": {
     "type": "git",
