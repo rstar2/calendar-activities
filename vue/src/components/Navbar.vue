@@ -12,9 +12,10 @@
       />
     </div>
 
-    <router-link to="/" class="mr-2 pa-1">Home</router-link>
+    <!-- Not used for now -->
+    <!-- <router-link to="/" class="mr-2 pa-1">Home</router-link>
     <router-link to="/about" class="mr-2 pa-1">About</router-link>
-    <router-link v-if="isAuth" to="/profile" class="ml-2 pa-1">Profile</router-link>
+    <router-link v-if="isAuth" to="/profile" class="ml-2 pa-1">Profile</router-link> -->
 
     <v-spacer></v-spacer>
 

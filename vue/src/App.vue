@@ -9,7 +9,12 @@
 
       <!-- Add a spinner until Firebase is "initialized" and user is known to be logged in or out -->
       <div v-if="!$store.state.authInitialized" class="d-flex justify-center align-center spinner">
-        <Spinner :speed="1.0" :size="120" :line-size="15" :line-fg-color="$vuetify.theme.themes.light.primary" />
+        <Spinner
+          :speed="1.0"
+          :size="120"
+          :line-size="15"
+          :line-fg-color="$vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light'].primary"
+        />
       </div>
       <template v-else>
         <v-fade-transition mode="out-in">
@@ -53,8 +58,10 @@ export default {
   height: 100%;
 }
 
-/* * {
+/* 
+* {
   background-color: var(--v-primary2-base);
   color: var(--v-primary2Text-base);
-} */
+}
+*/
 </style>

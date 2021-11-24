@@ -26,6 +26,7 @@ export default new Vuetify({
       dark: {
         primary: colors.red.darken4,
         info: colors.teal.lighten1,
+        anchor: colors.grey.darken4,
         // primary2: colors.indigo.base, //add this
         // primary2Text: colors.shades.white,
       },

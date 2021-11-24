@@ -66,7 +66,7 @@ const store = new Vuex.Store({
     /**
      * Set/replace all activities
      * @param {Vuex.State} state
-     * @param {{id: string, current: number, total: number}[]} activities
+     * @param {{id: string, name: string, user: string, current: number, cycle: number, total: number}[]} activities
      */
     activitiesSet(state, activities) {
       // set the activities
@@ -76,7 +76,7 @@ const store = new Vuex.Store({
     /**
      * Update a specific activity
      * @param {Vuex.State} state
-     * @param {{id: string, current: number, total: number}} activity
+     * @param {{id: string, name: string, user: string, current: number, cycle: number, total: number}} activity
      */
     activityUpdate(state, activity) {
       // update a specific activity

@@ -8,26 +8,30 @@
       </v-list-item-avatar>
       <v-list-item-content>
         <v-list-item-title>
-          {{ activity.type }} - {{ activity.current }}/{{ activity.cycle }}/{{ activity.total }}
+          {{ getUser(activity) }} - {{ activity.name }} - {{ activity.current }}/{{ activity.cycle }}/{{
+            activity.total
+          }}
         </v-list-item-title>
       </v-list-item-content>
 
-      <v-list-item-icon>
-        <v-btn icon @click="increment(activity)" :disabled="isDisabled(activity)">
-          <v-icon>mdi-numeric-positive-1</v-icon>
-        </v-btn>
-      </v-list-item-icon>
-      <v-list-item-icon>
-        <v-btn icon @click="reset(activity)" :disabled="isDisabled(activity)">
-          <v-icon>mdi-restore</v-icon>
-        </v-btn>
-      </v-list-item-icon>
+      <template v-if="isAuth">
+        <v-list-item-icon>
+          <v-btn icon @click="increment(activity)" :disabled="isDisabled(activity)">
+            <v-icon>mdi-numeric-positive-1</v-icon>
+          </v-btn>
+        </v-list-item-icon>
+        <v-list-item-icon>
+          <v-btn icon @click="reset(activity)" :disabled="isDisabled(activity)">
+            <v-icon>mdi-restore</v-icon>
+          </v-btn>
+        </v-list-item-icon>
+      </template>
     </v-list-item>
   </v-list>
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapGetters, mapState } from "vuex";
 export default {
   data() {
     return {
@@ -35,9 +39,16 @@ export default {
     };
   },
   computed: {
-    ...mapState(["users", "activities"]),
+    ...mapState(["activities"]),
+    ...mapGetters(["isAuth"]),
   },
   methods: {
+    /**
+     * @param {string} user
+     */
+    getUser({ user: id }) {
+      return this.$store.getters.getUserName(id) ?? "Anonymous";
+    },
     /**
      * @param {string} type
      */
