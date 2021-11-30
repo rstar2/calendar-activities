@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 
+// const HtmlWebpackPlugin = require("html-webpack-plugin");
 // const DumpVueEnvVarsWebpackPlugin = require('./DumpVueEnvVarsWebpackPlugin');
 
 // simulate loading of the .env files as would the vue-cli-service
@@ -33,8 +34,8 @@ module.exports = {
   pwa: {
     // NOTE: match these with the ones written in 'public/manifest.json'
     // These are for Apple iOS
-    name: "My App",
-    themeColor: "#FFFFFF",
+    name: "Calendar Activities",
+    themeColor: "#b71c1c", // this is the vuetify.primary color
     msTileColor: "#AAAAAA",
     appleMobileWebAppCapable: "yes",
     appleMobileWebAppStatusBarStyle: "black",
@@ -54,10 +55,20 @@ module.exports = {
       // ...other Workbox options...
     },
   },
-  //   configureWebpack: {
-  //     plugins: [
-  //       // dump/export the env variables
-  //       new DumpVueEnvVarsWebpackPlugin({ filename: 'service-worker-env.js' })
-  //     ]
-  //   }
+  configureWebpack: {
+    plugins: [
+      // dump/export the env variables
+      //   new DumpVueEnvVarsWebpackPlugin({ filename: "service-worker-env.js" }),
+      //   new HtmlWebpackPlugin({ title: "TEst" }),
+    ],
+  },
+  //   another way to config/update webpack
+  chainWebpack: (config) => {
+    config.plugin("html").tap((args) => {
+      //   args[0].template = "./public/index.html";
+      // by default title will be taken from the package.json 'name' property
+      args[0].title = "Calendar Activities";
+      return args;
+    });
+  },
 };
