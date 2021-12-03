@@ -53,6 +53,11 @@ module.exports = {
       // swSrc is required in InjectManifest mode.
       swSrc: "src/service-worker.js",
       // ...other Workbox options...
+
+      // NOTE!!! These options are not present for the 'InjectManifest' only for the 'GenerateSW'
+      // so service-worker update should be implemented additionally in registerServiceWorker.js
+      // skipWaiting: true,
+      // clientsClaim: true,
     },
   },
   configureWebpack: {

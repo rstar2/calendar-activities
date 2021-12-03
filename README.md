@@ -1,6 +1,6 @@
-# Demo for ReactNative and Firebase backend.
+# Demo for ReactNative and Firebase backend
 
-## For Vue
+## For Vue - this is the used deployed version for now
 
 - Project created with *@vue/cli 4.5.14*
 - Deploy with ```npm run deploy```
@@ -9,7 +9,6 @@
 
 - Project created with *create-react-native-app 3.6.0*
 
+## For React
 
-## For Reacr
-
-`- npx create-react-app my-react
+- Project created with ```npx create-react-app my-react```
