@@ -52,7 +52,7 @@ export default class Firebase {
 
   /**
    * @param {import("firebase/firestore").Query} query
-   * @param {(snapshot: import("firebase/firestore").DocumentSnapshot) => void} onNext
+   * @param {(snapshot: import("firebase/firestore").QuerySnapshot) => void} onNext
    * @return {import("firebase/firestore").Unsubscribe}
    */
   onSnapshot(query, onNext) {

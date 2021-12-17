@@ -1,30 +1,45 @@
 import React, { Context, PropsWithChildren, createContext, useState, useContext } from "react";
 
-export enum Theme {
-  light,
-  dark,
-}
+import { createTheme, ThemeProvider as MuiThemeProvider, Theme } from "@mui/material/styles";
+import { PaletteMode } from "@mui/material";
+export type { Theme };
+
+const mdTheme = createTheme();
 
 type ThemeContextValue = {
   theme: Theme;
-  setTheme(theme: Theme): void;
+  setMode(mode: PaletteMode): void;
 };
 
 const ThemeContext: Context<ThemeContextValue> = createContext({
-  theme: Theme.dark,
-  setTheme() {},
+  theme: mdTheme,
+  setMode: () => {
+    // noop
+  },
 } as ThemeContextValue);
 
 /**
  * The custom hook for using the theme,
  * It exports getter and setter
  */
-export function useTheme() {
+export function useTheme(): ThemeContextValue {
   return useContext(ThemeContext);
 }
 
-export default function ThemeProvider({ children }: PropsWithChildren<{}>) {
-  const [theme, setTheme] = useState(Theme.dark);
+export default function ThemeProvider({ children }: PropsWithChildren<unknown>): React.ReactElement {
+  const [theme, setTheme] = useState(mdTheme);
 
-  return <ThemeContext.Provider value={{ theme: theme, setTheme }}>{children}</ThemeContext.Provider>;
+  function setMode(mode: PaletteMode) {
+    setTheme((theme) => {
+      const changedTheme = { ...theme };
+      changedTheme.palette.mode = mode;
+      return changedTheme;
+    });
+  }
+
+  return (
+    <MuiThemeProvider theme={theme}>
+      <ThemeContext.Provider value={{ theme: theme, setMode }}>{children}</ThemeContext.Provider>
+    </MuiThemeProvider>
+  );
 }

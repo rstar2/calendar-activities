@@ -1,17 +1,19 @@
 import React from "react";
 
-import { useTheme, Theme } from "../contexts/ThemeProvider";
+import Button from "@mui/material/Button";
 
-function Nav() {
-  let { theme, setTheme } = useTheme();
+import { useTheme } from "../contexts/ThemeProvider";
+
+function ThemeToggle(): React.ReactElement {
+  const { theme, setMode } = useTheme();
 
   return (
     <div>
-        <button onClick={() => setTheme(theme === Theme.dark ? Theme.light : Theme.dark)}>
-            Theme toggle
-            </button>
+      <Button variant="contained" onClick={() => setMode(theme.palette.mode === "dark" ? "light" : "dark")}>
+        Theme toggle
+      </Button>
     </div>
   );
 }
 
-export default Nav;
+export default ThemeToggle;

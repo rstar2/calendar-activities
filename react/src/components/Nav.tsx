@@ -1,16 +1,37 @@
 import React from "react";
 
-import { useTheme, Theme } from "../contexts/ThemeProvider";
+import { Link as NavLink } from "react-router-dom";
 
-function Nav() {
-  let { theme } = useTheme();
+import Box from "@mui/material/Box";
+import Divider from "@mui/material/Divider";
+import Link from "@mui/material/Link";
 
-  const themeStyles = {
-    color: theme === Theme.dark ? "pink" : "gray",
-    backgroundColor: theme === Theme.dark ? "gray" : "pink",
-  };
+import ThemeToggle from "./ThemeToggle";
 
-  return <nav style={themeStyles}>Navigation</nav>;
+export default function Nav(): React.ReactElement {
+  return (
+    <>
+      <Box
+        sx={(theme) => ({
+          color: theme.palette.mode === "dark" ? "pink" : "gray",
+          backgroundColor: theme.palette.mode === "dark" ? "gray" : "pink",
+          "& > :not(style) + :not(style)": {
+            ml: 2,
+          },
+        })}
+      >
+        <Link component={NavLink} to="/users" color="inherit">
+          Users
+        </Link>
+
+        <Link component={NavLink} to="/activities" color="inherit">
+          Activities
+        </Link>
+      </Box>
+
+      <ThemeToggle />
+
+      <Divider />
+    </>
+  );
 }
-
-export default Nav;

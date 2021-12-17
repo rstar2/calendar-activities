@@ -62,7 +62,7 @@ const initUsersRealtime = () => {
 
 /**
  * Parse all users/activities
- * @param {import("firebase/firestore").DocumentSnapshot} snapshot
+ * @param {import("firebase/firestore").QuerySnapshot} snapshot
  * @returns {Array}
  */
 const parseDocs = (snapshot) => {
