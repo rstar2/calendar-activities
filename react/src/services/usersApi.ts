@@ -3,7 +3,10 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 import User from "../types/User";
 
-import { add as addNotification } from "../store/slices/notifications";
+import {
+  add as addNotification,
+  dismiss as dismissNotification,
+} from "../store/slices/notifications";
 
 type UserLike = {
   id: string;
@@ -19,8 +22,10 @@ const transformUser = (userLike: UserLike): User => {
 
 // Define a service using a base URL and expected endpoints
 export const usersApi = createApi({
-  reducerPath: "users",
-  baseQuery: fetchBaseQuery({ baseUrl: "https://jsonplaceholder.typicode.com/users" }),
+  reducerPath: "usersApi",
+  baseQuery: fetchBaseQuery({
+    baseUrl: "https://jsonplaceholder.typicode.com/users",
+  }),
   endpoints: (builder) => ({
     // query for getting all users
     getUsers: builder.query<User[], void>({
@@ -28,22 +33,49 @@ export const usersApi = createApi({
       query: () => "",
 
       // transform response to whatever is required
-      transformResponse: (response: UserLike[], meta, arg) => {
+      transformResponse: (response: UserLike[]) => {
         return response.map((userLike) => transformUser(userLike));
       },
 
       //
       async onQueryStarted(id, { dispatch, queryFulfilled }) {
         // `onStart` side-effect
-        dispatch(addNotification({ type: "info", text: "Fetching users..." }));
+        const key = Date.now();
+        dispatch(
+          addNotification({
+            key,
+            options: {
+              variant: "info",
+            },
+            message: "Fetching users...",
+          })
+        );
         try {
           // queryFulfilled is the API promise
           await queryFulfilled;
+
           // `onSuccess` side-effect
-          //   dispatch(addNotification({type: "success", text: "Users received!"}));
+          dispatch(dismissNotification(key));
+          dispatch(
+            addNotification({
+              options: {
+                variant: "success",
+              },
+              message: "Users received!",
+            })
+          );
         } catch (err) {
           // `onError` side-effect
-          //   dispatch(addNotification({type: "error", text: "Error fetching users!"}));
+
+          dispatch(dismissNotification(key));
+          dispatch(
+            addNotification({
+              options: {
+                variant: "error",
+              },
+              message: "Error fetching users!",
+            })
+          );
         }
       },
     }),
@@ -51,7 +83,7 @@ export const usersApi = createApi({
     // // query for getting a specific user
     getUser: builder.query<User, string>({
       query: (uid) => `${uid}`,
-      transformResponse: (response: UserLike, meta, arg) => {
+      transformResponse: (response: UserLike /* , meta, arg */) => {
         return transformUser(response);
       },
     }),

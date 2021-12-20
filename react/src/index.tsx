@@ -10,6 +10,12 @@ import { store } from "./store";
 // React-Router
 import { BrowserRouter } from "react-router-dom";
 
+// Multiple snackbars/notifications
+// NOTE: Even though notifications can be used directly from components
+// using useSnackbar() hook , it's better to use the store as then notifications
+// can be shown from services/store-actions/etc...
+import { SnackbarProvider } from "notistack";
+
 import "./index.css";
 import App from "./App";
 
@@ -17,7 +23,9 @@ ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
       <Provider store={store}>
-        <App />
+        <SnackbarProvider>
+          <App />
+        </SnackbarProvider>
       </Provider>
     </BrowserRouter>
   </React.StrictMode>,

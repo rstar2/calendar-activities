@@ -26,3 +26,8 @@ export default function useUsers(): User[] {
 
   return users;
 }
+
+// NOTE: This is an easy solution which will even work for this app,
+//  similar hooks can be created for activities and auth, so later can be used in either
+//  the necessary components or again globally in a single top-level provider component.
+//  But I'll it with redux-toolkit as a learning form.

@@ -14,7 +14,15 @@ import {
   QuerySnapshot,
   Unsubscribe,
 } from "firebase/firestore";
-import { getAuth, onAuthStateChanged, signOut, Auth, User, NextOrObserver } from "firebase/auth";
+import {
+  getAuth,
+  onAuthStateChanged,
+  signOut,
+  signInWithEmailAndPassword,
+  Auth,
+  User,
+  NextOrObserver,
+} from "firebase/auth";
 import { getFunctions, httpsCallable, Functions, HttpsCallable } from "firebase/functions";
 import { getMessaging, Messaging } from "firebase/messaging";
 
@@ -76,6 +84,11 @@ export class Firebase {
     return onAuthStateChanged(this.auth, onNext);
   }
 
+  async signIn(email: string, password: string): Promise<void> {
+    // just try to sign-in - no matter the result is Promise<UserCredential>
+    return signInWithEmailAndPassword(this.auth, email, password).then();
+  }
+
   async signOut(): Promise<void> {
     return signOut(this.auth);
   }
@@ -109,7 +122,7 @@ export type Doc = Readonly<{
 export const parseDocs = (snapshot: QuerySnapshot): Doc[] => {
   const docs: Doc[] = [];
   snapshot.forEach((doc) => {
-    docs.push({ id: doc.id });
+    docs.push({ id: doc.id, ...doc.data() });
   });
   return docs;
 };

@@ -5,10 +5,12 @@ import { ThunkAction } from "redux-thunk";
 
 // import all the slices for the react-toolkit-redux
 import notificationsReducer from "./slices/notifications";
+import authReducer from "./slices/auth";
 import activitiesReducer from "./slices/activities";
+import usersReducer from "./slices/users";
 
 // import a service-api for the rtk-query
-import { usersApi } from "../services/users";
+import { usersApi } from "../services/usersApi";
 
 export const store = configureStore({
   reducer: {
@@ -16,7 +18,9 @@ export const store = configureStore({
     notifications: notificationsReducer,
 
     // 2. as plain slice with async "side effect" (thunks)
+    auth: authReducer,
     activities: activitiesReducer,
+    users: usersReducer,
 
     // 3. using rtk-query - easiest and a lot of customizations, will work in 95% of the use cases
     // Add the generated reducer as a specific top-level slice
@@ -33,15 +37,15 @@ export const store = configureStore({
 // Infer the `RootState` and `AppDispatch` types from the store itself
 
 // Inferred type: {counter: CounterState, userApi: UsersState}
-export type RootState = ReturnType<typeof store.getState>;
+export type AppRootState = ReturnType<typeof store.getState>;
 
 export type AppDispatch = typeof store.dispatch;
 
 // type (safe for this app) for any redux-thunk thinks (e.g functions)
-export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, RootState, unknown, AnyAction>;
+export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, AppRootState, unknown, AnyAction>;
 
 // these are just utility wrappers around the redux userSelector and useDispatch
 // that are "typed" for this app's store
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
 export const useAppDispatch = (): AppDispatch => useDispatch<AppDispatch>();
-export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
+export const useAppSelector: TypedUseSelectorHook<AppRootState> = useSelector;

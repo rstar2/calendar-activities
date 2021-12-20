@@ -2,16 +2,23 @@ import React, { useState } from "react";
 
 import { Routes, Route } from "react-router-dom";
 
-import CssBaseline from "@mui/material/CssBaseline";
-import Box from "@mui/material/Box";
-import Container from "@mui/material/Container";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
+import {
+  CssBaseline,
+  Box,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Container,
+  Divider,
+  IconButton,
+  Toolbar,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-// import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import LoginIcon from "@mui/icons-material/Login";
-import LogoutIcon from "@mui/icons-material/Logout";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import DashboardIcon from "@mui/icons-material/Dashboard";
 
 // import logo from "./logo.svg";
 
@@ -20,76 +27,132 @@ import ThemeProvider, { Theme } from "./contexts/ThemeProvider";
 import Copyright from "./components/Copyright";
 import Nav from "./components/Nav";
 import AppBar from "./components/AppBar";
+import AppDrawer from "./components/AppDrawer";
 import Users from "./components/Users";
 import Activities from "./components/Activities";
-import Notifications from "./components/Notifications";
+import useNotifications from "./hooks/useNotifications";
 
-import useAuth from "./hooks/useAuth";
+const drawerWidth = 240;
 
 function App(): React.ReactElement {
-  const [isDrawerOpen, setDrawerOpen] = useState(true);
+  // use/show any notifications - actually it will re-pass to useSnackbar internally
+  // the showing/adding and dismissing of notifications is from using the store and
+  // dispatching a notification action
+  useNotifications();
 
-  const [isAuth, login, logout] = useAuth();
+  const [isDrawerOpen, setDrawerOpen] = useState(false);
+  const toggleDrawerOpen = () => setDrawerOpen(!isDrawerOpen);
 
   return (
     <ThemeProvider>
       <CssBaseline />
-      <AppBar position="absolute">
-        <Toolbar
-          sx={{
-            pr: "24px", // keep right padding when drawer closed,
-          }}
+
+      <Box sx={{ display: "flex" }}>
+        <AppBar
+          position="absolute"
+          drawerWidth={drawerWidth}
+          open={isDrawerOpen}
         >
-          <IconButton
-            edge="start"
-            color="inherit"
-            onClick={() => setDrawerOpen(!isDrawerOpen)}
+          <Toolbar
             sx={{
-              // mr: "36px",
-              mr: 4,
-              ...(isDrawerOpen && { display: "none" }),
+              pr: "24px", // keep right padding when drawer closed,
+              display: "flex",
+              alignItems: "center",
             }}
           >
-            <MenuIcon />
-          </IconButton>
-          <Typography component="h1" variant="h6" color="inherit" noWrap sx={{ flexGrow: 1 }}>
-            Calendar Activities
-          </Typography>
-          <IconButton color="inherit" onClick={() => (isAuth ? logout() : login())}>
-            {!isAuth && <LoginIcon />}
-            {isAuth && <LogoutIcon />}
-          </IconButton>
-        </Toolbar>
-      </AppBar>
+            <Tooltip title="Toggle menu">
+              <IconButton
+                edge="start"
+                color="inherit"
+                onClick={toggleDrawerOpen}
+                sx={{
+                  mr: 4,
+                  ...(isDrawerOpen && { display: "none" }),
+                }}
+              >
+                <MenuIcon />
+              </IconButton>
+            </Tooltip>
 
-      <Box
-        component="main"
-        sx={{
-          backgroundColor: (theme: Theme) =>
-            theme.palette.mode === "light" ? theme.palette.grey[100] : theme.palette.grey[900],
-          flexGrow: 1,
-          height: "100vh",
-          overflow: "auto",
-        }}
-      >
-        <Toolbar />
-        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-          <Nav />
+            <Typography component="h1" variant="h6" color="inherit" noWrap>
+              Calendar Activities
+            </Typography>
 
-          <Routes>
-            <Route path="/users" element={<Users />} />
-            <Route path="/activities" element={<Activities />} />
+            <Divider
+              orientation="vertical"
+              variant="middle"
+              light
+              flexItem
+              sx={{ mx: 1, borderColor: "inherit" }}
+            />
 
-            {/* no match route */}
-            <Route path="*" element={<Typography color="error">There's nothing here!</Typography>} />
-          </Routes>
+            <Nav />
+          </Toolbar>
+        </AppBar>
+        <AppDrawer
+          variant="permanent"
+          open={isDrawerOpen}
+          drawerWidth={drawerWidth}
+        >
+          <Toolbar
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "flex-end",
+              px: [1],
+            }}
+          >
+            <IconButton onClick={toggleDrawerOpen}>
+              <ChevronLeftIcon />
+            </IconButton>
+          </Toolbar>
+          <Divider />
+          <List>
+            <ListItem button>
+              <ListItemIcon>
+                <DashboardIcon />
+              </ListItemIcon>
+              <ListItemText primary="Dashboard" />
+            </ListItem>
+          </List>
+        </AppDrawer>
 
-          <Copyright sx={{ pt: 4 }} />
-        </Container>
+        <Box
+          component="main"
+          sx={{
+            backgroundColor: (theme: Theme) =>
+              theme.palette.mode === "light"
+                ? theme.palette.grey[100]
+                : theme.palette.grey[900],
+            flexGrow: 1,
+            height: "100vh",
+            overflow: "auto",
+          }}
+        >
+          {/* this is "artificial" toolbar just to take the same space
+        as the AppBar toolbar component which is with absolute position */}
+          <Toolbar />
+
+          <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+            <Routes>
+              <Route path="/users" element={<Users />} />
+              <Route path="/activities" element={<Activities />} />
+
+              {/* no match route */}
+              <Route
+                path="*"
+                element={
+                  <Typography color="error">There's nothing here!</Typography>
+                }
+              />
+            </Routes>
+
+            <Copyright sx={{ pt: 4 }} />
+          </Container>
+        </Box>
       </Box>
-
-      <Notifications />
     </ThemeProvider>
   );
 }
+
 export default App;
