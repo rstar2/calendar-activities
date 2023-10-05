@@ -1,6 +1,6 @@
 <template>
   <v-list dense subheader>
-    <v-subheader>Activities (current/cycle/total)</v-subheader>
+    <v-subheader>Activities (current/total/cycle)</v-subheader>
 
     <v-list-item v-for="activity in activities" :key="activity.id">
       <v-list-item-avatar>
@@ -8,9 +8,7 @@
       </v-list-item-avatar>
       <v-list-item-content>
         <v-list-item-title>
-          {{ getUser(activity) }} - {{ activity.name }} - {{ activity.current }}/{{ activity.cycle }}/{{
-            activity.total
-          }}
+          {{ getUser(activity) }} - {{ activity.name }} - {{ getCounts(activity) }}
         </v-list-item-title>
       </v-list-item-content>
 
@@ -50,6 +48,17 @@ export default {
       return this.$store.getters.getUserName(id) ?? "Anonymous";
     },
     /**
+     * @param {number} current
+     * @param {number} total
+     * @param {number} [cycle]
+     */
+    getCounts({ current, total, cycle }) {
+      const counts = [current];
+      if (total) counts.push(total);
+      if (cycle) counts.push(cycle);
+      return counts.join(" / ");
+    },
+    /**
      * @param {string} type
      */
     getIcon({ type }) {
@@ -58,6 +67,14 @@ export default {
           return "🧗";
         case "horse-riding":
           return "🏇";
+        case "dance":
+          return "💃";
+        case "karate":
+          return "🥷";
+        case "swimming":
+          return "🏊‍♀️";
+        case "music":
+          return "🎵";
       }
       return "mdi-gesture-tap-button";
     },

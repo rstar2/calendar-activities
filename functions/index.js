@@ -7,6 +7,7 @@ admin.initializeApp();
 const functionsConfig = functions.config();
 
 const db = admin.firestore();
+db.settings({ ignoreUndefinedProperties: true });
 // NOTE: the 'firebase' options are by default present in the functions config object
 // but others should have been set as the environment variables, like for 'functionsConfig.cloudinary'
 //      Configuring of environment variables in Firebase function is "ugly" and only through the CLI like:
@@ -44,10 +45,13 @@ exports.activitiesAdd = functions.https.onCall(async (data, context) => {
     .get()
     .then((docSnapshot) => docSnapshot.data());
 
+  let current = activity.current + count;
+  if (activity.cycle) current = current % activity.cycle;
+  let total = activity.total !== undefined ? activity.total + count : undefined;
   await activities.doc(id).set(
     {
-      current: (activity.current + count) % activity.cycle,
-      total: activity.total + count,
+      current: current,
+      total: total,
     },
     { merge: true }
   );
