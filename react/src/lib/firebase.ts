@@ -23,7 +23,12 @@ import {
   User,
   NextOrObserver,
 } from "firebase/auth";
-import { getFunctions, httpsCallable, Functions, HttpsCallable } from "firebase/functions";
+import {
+  getFunctions,
+  httpsCallable,
+  Functions,
+  HttpsCallable,
+} from "firebase/functions";
 import { getMessaging, Messaging } from "firebase/messaging";
 
 // import * as firebaseui from "firebaseui";
@@ -41,7 +46,7 @@ class Firebase {
   private readonly db: Firestore;
   private readonly functions: Functions;
   private readonly auth: Auth;
-//   private readonly ui: firebaseui.auth.AuthUI;
+  //   private readonly ui: firebaseui.auth.AuthUI;
 
   constructor(firebaseConfig: FirebaseConfig) {
     // Initialize Firebase
@@ -74,7 +79,10 @@ class Firebase {
     return getDocs(query);
   }
 
-  onSnapshot(query: Query, onNext: (snapshot: QuerySnapshot) => void): Unsubscribe {
+  onSnapshot(
+    query: Query,
+    onNext: (snapshot: QuerySnapshot) => void,
+  ): Unsubscribe {
     return onSnapshot(query, onNext);
   }
 

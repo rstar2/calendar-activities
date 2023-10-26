@@ -1,7 +1,90 @@
-function Activities() {
-  return `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Cursus turpis massa tincidunt dui ut ornare lectus sit. Lobortis elementum nibh tellus molestie nunc non blandit massa enim. Aliquet nec ullamcorper sit amet risus nullam eget felis eget. Praesent elementum facilisis leo vel fringilla est ullamcorper. Magna ac placerat vestibulum lectus mauris ultrices eros. Feugiat in fermentum posuere urna nec tincidunt. Et tortor consequat id porta. Arcu non sodales neque sodales ut etiam sit amet nisl. Interdum velit laoreet id donec. Commodo odio aenean sed adipiscing diam donec adipiscing tristique. Bibendum arcu vitae elementum curabitur. Volutpat ac tincidunt vitae semper quis lectus nulla at volutpat. Scelerisque mauris pellentesque pulvinar pellentesque habitant.
+import React, { useCallback } from "react";
+import { useMap } from "react-use";
+import {
+  HStack,
+  List,
+  ListItem,
+  Tooltip,
+  IconButton,
+  Text,
+  Skeleton,
+} from "@chakra-ui/react";
 
-  Viverra aliquet eget sit amet tellus cras adipiscing enim eu. Eget mi proin sed libero enim. Ornare massa eget egestas purus viverra accumsan in nisl. Turpis egestas pretium aenean pharetra magna ac. Ut porttitor leo a diam sollicitudin. Id venenatis a condimentum vitae sapien pellentesque habitant morbi tristique. Mi eget mauris pharetra et ultrices. Elit scelerisque mauris pellentesque pulvinar pellentesque habitant morbi tristique senectus. Blandit turpis cursus in hac habitasse platea. Sed cras ornare arcu dui. Nunc faucibus a pellentesque s`;
+import { useAuth } from "../cache/auth";
+import {
+  useActivities,
+  useActivityIncrement,
+  useActivityReset,
+} from "../cache/activities";
+import Activity, { getIcon } from "../types/Activity";
+import { AddIcon, RepeatIcon } from "@chakra-ui/icons";
+import Expander from "./Expander";
+
+function Activities() {
+  const { data } = useAuth();
+  const { data: activities } = useActivities();
+  const isAuth = data?.isAuth ?? false;
+  console.log("???", !!activities);
+
+  const activityIncrement = useActivityIncrement();
+  const activityReset = useActivityReset();
+
+  const handleActivityIncrement = useCallback(({ id }: Activity) => {
+    setDisabled(id, true);
+    activityIncrement(id).finally(() => removeDisabled(id));
+  }, []);
+
+  const handleActivityReset = useCallback(({ id }: Activity) => {
+    setDisabled(id, true);
+    activityReset(id).finally(() => removeDisabled(id));
+  }, []);
+
+  const [disabled, { set: setDisabled, remove: removeDisabled }] = useMap(
+    {} as Record<string, true>,
+  );
+
+  return (
+    <List spacing={3}>
+      {!activities
+        ? Array.from({ length: 5 }).map(() => <Skeleton h={6} />)
+        : activities.map((activity) => (
+            <ListItem key={activity.id}>
+              <HStack>
+                <Text>{formatActivity(activity)}</Text>
+                {isAuth && (
+                  <>
+                    <Expander />
+                    <Tooltip label="Increment">
+                      <IconButton
+                        variant="ghost"
+                        isRound
+                        isDisabled={!isAuth || disabled[activity.id]}
+                        onClick={() => handleActivityIncrement(activity)}
+                        icon={<AddIcon />}
+                        aria-label="increment"
+                      />
+                    </Tooltip>
+                    <Tooltip label="Reset">
+                      <IconButton
+                        variant="ghost"
+                        isRound
+                        isDisabled={!isAuth || disabled[activity.id]}
+                        onClick={() => handleActivityReset(activity)}
+                        icon={<RepeatIcon />}
+                        aria-label="reset"
+                      />
+                    </Tooltip>
+                  </>
+                )}
+              </HStack>
+            </ListItem>
+          ))}
+    </List>
+  );
 }
+
+const formatActivity = (activity: Activity): React.ReactNode => {
+  return getIcon(activity) + " " + activity.name + " - " + activity.current;
+};
 
 export default Activities;

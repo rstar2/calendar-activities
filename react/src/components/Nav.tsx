@@ -1,12 +1,13 @@
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 
 import {
   IconButton,
   Stack,
-  Text,
+  Heading,
   Tooltip,
   type StackProps,
   useColorMode,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { TbLogin, TbLogout, TbLoader2 } from "react-icons/tb";
@@ -25,20 +26,24 @@ function Nav(props: StackProps) {
   const isKnown = data!.isKnown;
   const isAuth = data!.isAuth;
 
-  const [isOpenDialogLogin, setOpenDialogLogin] = useState(false);
+  const {
+    isOpen: isOpenDialogLogin,
+    onOpen: openDialogLogin,
+    onClose: closeDialogLogin,
+  } = useDisclosure({ defaultIsOpen: false });
+
   const loginOrLogout = useCallback(() => {
     if (isAuth) logout();
-    else setOpenDialogLogin(true);
+    else openDialogLogin();
   }, [isAuth]);
 
   const handleLogin = useCallback(
-    (credentials?: { email: string; password: string }) => {
-      // close dialog
-      setOpenDialogLogin(false);
-
+    async (credentials?: { email: string; password: string }) => {
       // login
-      // login({ email: "rstar3@abv.bg", password: "@K7@qnxwSRc4stQ" });
-      if (credentials) login(credentials);
+      if (credentials) await login(credentials);
+
+      // close dialog (only if canceled or successful login)
+      closeDialogLogin();
     },
     [],
   );
@@ -46,7 +51,7 @@ function Nav(props: StackProps) {
   return (
     <>
       <Stack flexDirection="row" h={16} px={6} alignItems="center" {...props}>
-        <Text>Calendar Activities</Text>
+        <Heading size="md">Calendar Activities</Heading>
 
         <Expander />
 

@@ -18,7 +18,7 @@ import {
   ModalOverlay,
 } from "@chakra-ui/react";
 
-import { BiSolidHide, BiSolidShow } from "react-icons/bi";
+import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 
 import { z } from "zod";
 
@@ -117,11 +117,7 @@ function DialogLogin({ open, onClose }: DialogLoginProps) {
                 <IconButton
                   variant="ghost"
                   icon={
-                    localState.isShowPassword ? (
-                      <BiSolidHide />
-                    ) : (
-                      <BiSolidShow />
-                    )
+                    localState.isShowPassword ? <ViewOffIcon /> : <ViewIcon />
                   }
                   aria-label="Password visibility"
                   onClick={() =>

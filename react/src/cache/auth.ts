@@ -1,7 +1,6 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 
 import firebase from "../lib/firebase";
-
 import { queryClient } from "./index";
 
 firebase.onAuthStateChanged((user) => {
