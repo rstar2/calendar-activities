@@ -8,7 +8,77 @@
   -webkit-text-size-adjust: 100%;
 }
 
-html, body, #root {
+html,
+body,
+#root {
   margin: 0;
   height: 100%;
+}
+
+.icon-rotate {
+  transition: all 0.15s ease 0s;
+  animation: rotate-360 3s linear infinite;
+  animation-fill-mode: both;
+}
+
+.icon-tada {
+  transition: all 0.15s ease 0s;
+  animation: tada 3s ease infinite;
+  animation-fill-mode: both;
+}
+
+.icon-pulse {
+  transition: all 0.15s ease 0s;
+  animation: pulse 2s ease infinite;
+  animation-fill-mode: both;
+}
+
+@keyframes rotate-360 {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes tada {
+  0% {
+    transform: scale3d(1, 1, 1);
+  }
+
+  10%,
+  5% {
+    transform: scale3d(0.9, 0.9, 0.9) rotate3d(0, 0, 1, -5deg);
+  }
+  15%,
+  25%,
+  35%,
+  45% {
+    transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 5deg);
+  }
+  20%,
+  30%,
+  40% {
+    transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -5deg);
+  }
+  50% {
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+    transform: scale3d(0.8, 0.8, 0.8);
+  }
+
+  50% {
+    transform: scale3d(1, 1, 1);
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: scale3d(0.8, 0.8, 0.8);
+  }
 }

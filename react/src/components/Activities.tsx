@@ -1,0 +1,7 @@
+function Activities() {
+  return `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Cursus turpis massa tincidunt dui ut ornare lectus sit. Lobortis elementum nibh tellus molestie nunc non blandit massa enim. Aliquet nec ullamcorper sit amet risus nullam eget felis eget. Praesent elementum facilisis leo vel fringilla est ullamcorper. Magna ac placerat vestibulum lectus mauris ultrices eros. Feugiat in fermentum posuere urna nec tincidunt. Et tortor consequat id porta. Arcu non sodales neque sodales ut etiam sit amet nisl. Interdum velit laoreet id donec. Commodo odio aenean sed adipiscing diam donec adipiscing tristique. Bibendum arcu vitae elementum curabitur. Volutpat ac tincidunt vitae semper quis lectus nulla at volutpat. Scelerisque mauris pellentesque pulvinar pellentesque habitant.
+
+  Viverra aliquet eget sit amet tellus cras adipiscing enim eu. Eget mi proin sed libero enim. Ornare massa eget egestas purus viverra accumsan in nisl. Turpis egestas pretium aenean pharetra magna ac. Ut porttitor leo a diam sollicitudin. Id venenatis a condimentum vitae sapien pellentesque habitant morbi tristique. Mi eget mauris pharetra et ultrices. Elit scelerisque mauris pellentesque pulvinar pellentesque habitant morbi tristique senectus. Blandit turpis cursus in hac habitasse platea. Sed cras ornare arcu dui. Nunc faucibus a pellentesque s`;
+}
+
+export default Activities;
