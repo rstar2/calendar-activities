@@ -1,7 +1,11 @@
-- notifications on mutation results
+# TODOs
+
+- ~~notifications on mutation results~~
 
 - Make it PWA
-    - Standalone app
-    - SW - for auto update and PushNotifications
+  - Standalone app - e.g. add manifest file [Check criteria](https://web.dev/articles/install-criteria)
+  - SW - for Offline/Caching/AutoUpdate
+  - SW - for PushNotifications
 
 - Allow editing of own activities - remove/add/edit
+  - Drawer and etc...

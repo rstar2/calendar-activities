@@ -1,7 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 
-
 // React-Router
 import { BrowserRouter } from "react-router-dom";
 
@@ -25,7 +24,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         </ChakraProvider>
       </CacheProvider>
     </BrowserRouter>
-  </React.StrictMode>
+  </React.StrictMode>,
 );
 
 // If you want to start measuring performance in your app, pass a function

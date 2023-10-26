@@ -88,7 +88,12 @@ function DialogLogin({ open, onClose }: DialogLoginProps) {
   };
 
   return (
-    <Modal onClose={onClose} isOpen={open}>
+    <Modal
+      onClose={onClose}
+      isOpen={open}
+      closeOnOverlayClick={false}
+      closeOnEsc
+    >
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Login</ModalHeader>

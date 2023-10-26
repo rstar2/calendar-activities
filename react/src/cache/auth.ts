@@ -40,6 +40,10 @@ export function useAuthLogin() {
       email: string;
       password: string;
     }) => firebase.signIn(email, password),
+    // meta is used for success/failed notification on mutation result
+    meta: {
+      action: "Login",
+    },
   });
 
   // if needed can return the whole mutation, like loading, and error state
@@ -54,6 +58,10 @@ export function useAuthLogin() {
 export function useAuthLogout() {
   const mutation = useMutation({
     mutationFn: async () => firebase.signOut(),
+    // meta is used for success/failed notification on mutation result
+    meta: {
+      action: "Logout",
+    },
   });
 
   // if needed can return the whole mutation, like loading, and error state

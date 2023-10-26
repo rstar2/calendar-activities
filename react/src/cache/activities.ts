@@ -41,6 +41,10 @@ export function useActivityReset() {
     mutationFn: async (activityId: string) => {
       await activitiesResetFn({ id: activityId }).then((result) => result.data);
     },
+    // meta is used for success/failed notification on mutation result
+    meta: {
+      action: ["Activity", "Reset"],
+    },
   });
 
   // if needed can return the whole mutation, like loading, and error state
@@ -56,6 +60,10 @@ export function useActivityIncrement() {
       await activitiesAddFn({ id: activityId, count: 1 }).then(
         (result) => result.data,
       );
+    },
+    // meta is used for success/failed notification on mutation result
+    meta: {
+      action: ["Activity", "Increment"],
     },
   });
 

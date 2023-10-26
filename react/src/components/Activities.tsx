@@ -47,7 +47,9 @@ function Activities() {
   return (
     <List spacing={3}>
       {!activities
-        ? Array.from({ length: 5 }).map(() => <Skeleton h={6} />)
+        ? Array.from({ length: 5 }).map((_, index) => (
+            <Skeleton key={index} h={6} />
+          ))
         : activities.map((activity) => (
             <ListItem key={activity.id}>
               <HStack>
