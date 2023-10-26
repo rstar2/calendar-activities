@@ -25,8 +25,11 @@ firebase.onSnapshot(collection, (snapshot: QuerySnapshot) => {
 export function useActivities() {
   return useQuery({
     queryKey: ["activities"],
-    queryFn: (): null | Activity[] => null,
+    queryFn: () => Promise.reject(new Error("Not used")),
+    enabled: false,
     staleTime: Infinity,
+    // set it so that the TS to auto-infer the useActivities().data type
+    initialData: undefined as Activity[] | undefined,
   });
 }
 

@@ -21,10 +21,11 @@ import { AddIcon, RepeatIcon } from "@chakra-ui/icons";
 import Expander from "./Expander";
 
 function Activities() {
-  const { data } = useAuth();
+  const {
+    data: { isAuth },
+  } = useAuth();
+
   const { data: activities } = useActivities();
-  const isAuth = data?.isAuth ?? false;
-  console.log("???", !!activities);
 
   const activityIncrement = useActivityIncrement();
   const activityReset = useActivityReset();

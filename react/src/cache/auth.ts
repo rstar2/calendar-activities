@@ -16,12 +16,13 @@ firebase.onAuthStateChanged((user) => {
 export function useAuth() {
   return useQuery({
     queryKey: ["auth"],
-    queryFn: () => null,
+    queryFn: () => Promise.reject(new Error("Not used")),
+    enabled: false,
+    staleTime: Infinity,
     initialData: {
       isKnown: false,
       isAuth: false,
     },
-    staleTime: Infinity,
   });
 }
 

@@ -22,9 +22,9 @@ function Nav(props: StackProps) {
   const login = useAuthLogin();
   const logout = useAuthLogout();
 
-  const { data } = useAuth();
-  const isKnown = data!.isKnown;
-  const isAuth = data!.isAuth;
+  const {
+    data: { isKnown, isAuth },
+  } = useAuth();
 
   const {
     isOpen: isOpenDialogLogin,
