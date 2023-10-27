@@ -34,7 +34,7 @@ export const queryClient = new QueryClient({
     // onError(error, query) {},
 
     // one combined callback
-    onSettled(data, error, query) {
+    onSettled(_data, error, query) {
       const { meta } = query;
 
       showNotification(meta as CacheMeta, error);
@@ -50,7 +50,7 @@ export const queryClient = new QueryClient({
     // onError(error, variables, context, mutation) {},
 
     // one combined callback
-    onSettled(data, error, variables, context, mutation) {
+    onSettled(_data, error, _variables, _context, mutation) {
       const { meta } = mutation;
 
       // show success notification - only for mutations with meta key

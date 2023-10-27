@@ -7,7 +7,7 @@ export default function Copyright(props: TextProps): React.ReactElement {
     <Text variant="body2" align="center" {...props}>
       {"Copyright © "}
       <Link href="https://github.com/rstar2/" target="_blank">Rumen Neshev</Link>
-      {" " + new Date().getFullYear() + "."}
+      {" " + new Date().getFullYear()}
     </Text>
   );
 }

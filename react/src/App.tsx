@@ -1,5 +1,5 @@
-import { Routes, Route } from "react-router-dom";
-import { Box, Container, Stack, Text } from "@chakra-ui/react";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { Box, Container, Stack } from "@chakra-ui/react";
 
 import Nav from "./components/Nav";
 import Users from "./components/Users";
@@ -17,10 +17,7 @@ function App() {
             <Route path="/activities" element={<Activities />} />
 
             {/* no match route */}
-            <Route
-              path="*"
-              element={<Text color="error">There's nothing here!</Text>}
-            />
+            <Route path="*" element={<Navigate to="/activities" />} />
           </Routes>
         </Box>
         <Copyright py={4} />

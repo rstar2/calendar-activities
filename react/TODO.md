@@ -1,11 +1,11 @@
 # TODOs
 
-- ~~notifications on mutation results~~
+- [x] notifications on mutation results
 
-- Make it PWA
-  - Standalone app - e.g. add manifest file [Check criteria](https://web.dev/articles/install-criteria)
-  - SW - for Offline/Caching/AutoUpdate
-  - SW - for PushNotifications
+- [ ] Make it PWA - use ite plugin https://vite-pwa-org.netlify.app/
+  - [x] Manifest - Standalone app
+  - [x] SW - for Offline/Caching/AutoUpdate
+  - [ ] SW - for PushNotifications
 
-- Allow editing of own activities - remove/add/edit
-  - Drawer and etc...
+- [ ] Allow editing of own activities - remove/add/edit
+  - [ ] Drawer and etc...

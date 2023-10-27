@@ -104,6 +104,10 @@ class Firebase {
   getCurrentUser(): User | undefined {
     return this.auth.currentUser ?? undefined;
   }
+
+  todo() {
+    return this.messaging;
+  }
 }
 
 const firebaseConfig = {

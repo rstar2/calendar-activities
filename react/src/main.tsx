@@ -15,6 +15,8 @@ import reportWebVitals from "./reportWebVitals.ts";
 // the tanstack-query cache provider
 import { CacheProvider } from "./cache/index.tsx";
 
+import "./registerSW.tsx";
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <BrowserRouter>
