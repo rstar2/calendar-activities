@@ -10,10 +10,16 @@ export default defineConfig({
 
     // for PWA - https://vite-pwa-org.netlify.app/guide/
     VitePWA({
-      //   registerType: "autoUpdate",
+      strategies: "generateSW",
+
+      // with "prompt" in registerSW.tsx the new--version logic is handled
       registerType: "prompt",
-      injectRegister: "auto",
-      includeAssets: ["favicon.ico", "apple-touc-icon.png", "masked-icon.svg"],
+
+      includeAssets: [
+        "favicon.ico",
+        "apple-touch-icon-180x180.png",
+        "maskable-icon-512x512.png",
+      ],
 
       // dynamic manifest generation
       // NOTE - the images are generated with the npm script `generate-pwa-assets`,

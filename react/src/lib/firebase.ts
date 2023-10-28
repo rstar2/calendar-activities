@@ -105,8 +105,17 @@ class Firebase {
     return this.auth.currentUser ?? undefined;
   }
 
-  todo() {
-    return this.messaging;
+  configurePushNotifications(
+    swReg: ServiceWorkerRegistration,
+    vapidPublicKey: string,
+  ) {
+    console.log(!!swReg, !!vapidPublicKey, !!this.messaging);
+    // TODO:
+    // // use current service-worker, otherwise firebase will try to register
+    // // and use its own firebase-messaging-sw.js file
+    // this.messaging.useServiceWorker(swReg);
+    // // Add the VAPID public key generated from the console
+    // this.messaging. usePublicVapidKey(vapidPublicKey);
   }
 }
 
