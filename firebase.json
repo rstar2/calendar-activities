@@ -25,6 +25,6 @@
   }
 //   ,
 //   "functions": {
-    // "predeploy": ["node firebase-env.js", "npm --prefix functions install"]
+//     "predeploy": ["node firebase-env.js", "npm --prefix functions install"]
 //   }
 }

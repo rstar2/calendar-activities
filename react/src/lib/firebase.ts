@@ -29,8 +29,7 @@ import {
   Functions,
   HttpsCallable,
 } from "firebase/functions";
-import { getMessaging, Messaging } from "firebase/messaging";
-
+import { getMessaging, getToken, type Messaging } from "firebase/messaging";
 // import * as firebaseui from "firebaseui";
 
 export type FirebaseConfig = {
@@ -42,20 +41,20 @@ export type FirebaseConfig = {
 };
 
 class Firebase {
-  private readonly messaging: Messaging;
   private readonly db: Firestore;
   private readonly functions: Functions;
   private readonly auth: Auth;
+  private readonly messaging: Messaging;
   //   private readonly ui: firebaseui.auth.AuthUI;
 
   constructor(firebaseConfig: FirebaseConfig) {
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
-    this.messaging = getMessaging(app);
+
     this.db = getFirestore(app);
     this.functions = getFunctions(app);
     this.auth = getAuth(app);
-
+    this.messaging = getMessaging(app);
     // this.ui = new firebaseui.auth.AuthUI(this.auth);
   }
 
@@ -105,17 +104,16 @@ class Firebase {
     return this.auth.currentUser ?? undefined;
   }
 
-  configurePushNotifications(
-    swReg: ServiceWorkerRegistration,
-    vapidPublicKey: string,
-  ) {
-    console.log(!!swReg, !!vapidPublicKey, !!this.messaging);
-    // TODO:
-    // // use current service-worker, otherwise firebase will try to register
-    // // and use its own firebase-messaging-sw.js file
-    // this.messaging.useServiceWorker(swReg);
-    // // Add the VAPID public key generated from the console
-    // this.messaging. usePublicVapidKey(vapidPublicKey);
+  // ---------- FCM messaging (web push notifications) ------------
+
+  /**
+   * Should be called after showing notification is "granted"
+   */
+  async getMassagingToken(swReg: ServiceWorkerRegistration, vapidKey: string) {
+    return getToken(this.messaging, {
+      serviceWorkerRegistration: swReg,
+      vapidKey,
+    });
   }
 }
 

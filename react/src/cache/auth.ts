@@ -2,8 +2,13 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 
 import firebase from "../lib/firebase";
 import { queryClient } from "./index";
+import { createSubscription } from "../configurePushNotifications";
 
 firebase.onAuthStateChanged((user) => {
+  if (user) {
+    createSubscription();
+  }
+
   queryClient.setQueryData(["auth"], {
     isKnown: true,
     isAuth: !!user,
