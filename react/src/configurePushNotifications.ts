@@ -127,9 +127,6 @@ function requestNotificationPermission(): Promise<void> {
 
 /**
  * Update user's subscription on the server - add new, remove old
- * @param swReg
- * @param newSubscription
- * @param oldSubscription
  */
 async function updateSubscriptionOnServer(
   swReg: ServiceWorkerRegistration,
