@@ -134,9 +134,9 @@ async function updateSubscriptionOnServer(
   oldSubscription?: PushSubscription,
 ) {
   // TODO: send newSubscription to server if the common Valid `web-push` is used
-  console.log(newSubscription, oldSubscription);
+  console.log("PushSubscription:", newSubscription, oldSubscription);
 
   // TODO: send fcmToken to server if the `firebase-admin` is used
   const fcmToken = await firebase.getMassagingToken(swReg, vapidPublicKey!);
-  console.log(fcmToken);
+  console.log("FCM-token", fcmToken);
 }

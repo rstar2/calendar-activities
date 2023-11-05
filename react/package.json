@@ -8,7 +8,8 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "generate-pwa-assets": "pwa-assets-generator --preset minimal public/logo.svg",
-    "surge": "surge dist/ nonstop-thought.surge.sh"
+    "surge": "surge dist/ nonstop-thought.surge.sh",
+    "deploy": "npm run build && cp dist/index.html dist/200.html && npm run surge"
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.1.1",

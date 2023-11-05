@@ -60,11 +60,16 @@ self.addEventListener("push", function (e) {
   // assuming data is in plain string format
   // const message = e.data.text();
 
+  const notification = message.notification || message;
+
   e.waitUntil(
-    self.registration.showNotification(message.title, {
-      body: message.body,
-      icon: message.icon,
-      actions: message.actions,
+    self.registration.showNotification(notification.title, {
+      body: notification.body,
+      icon: notification.imageUrl || notification.icon,
+      actions: [
+        { action: "one", title: "ONE" },
+        { action: "two", title: "TWO" },
+      ],
     }),
   );
 });
