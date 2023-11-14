@@ -11,4 +11,5 @@
 
 ## For React
 
-- Project created with ```npx create-react-app my-react```
+- Project created with `Vite`
+- 

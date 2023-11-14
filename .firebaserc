@@ -1,5 +1,18 @@
 {
   "projects": {
     "default": "calendar-activities"
-  }
+  },
+  "targets": {
+    "calendar-activities": {
+      "hosting": {
+        "vue": [
+          "calendar-activities-vue"
+        ],
+        "react": [
+          "calendar-activities"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }

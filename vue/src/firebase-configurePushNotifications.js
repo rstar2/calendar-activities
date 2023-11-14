@@ -20,12 +20,15 @@ export default (swReg) => {
 
   console.log("Configure Firebase Push Messaging");
 
+  // TODO: with firebase 9 it's now - firebase.getMassagingToken(swReg, vapidPublicKey)
+  //   see the configurePushNotifications.ts in the "react" version
+
   // use current service-worker, otherwise firebase will try to register
   // and use its own firebase-messaging-sw.js file
-  Vue.$firebase.messaging.useServiceWorker(swReg);
+//   Vue.$firebase.messaging.useServiceWorker(swReg);
 
   // Add the VAPID public key generated from the console
-  Vue.$firebase.messaging.usePublicVapidKey(vapidPublicKey);
+//   Vue.$firebase.messaging.usePublicVapidKey(vapidPublicKey);
 
   //   auth.onAuthStateChanged(
   //     /* firebase.firestore.User */ (user) => {

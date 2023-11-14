@@ -9,7 +9,11 @@
     "deploy:db": "firebase deploy --only firestore",
     "deploy:functions": "firebase deploy --only functions",
     "deploy:functions-env": "node firebase-env.js",
-    "deploy:hosting": "firebase deploy --only hosting",
+    "deploy:hosting:vue": "firebase deploy --only hosting:vue",
+    "deploy:hosting:react": "firebase deploy --only hosting:react",
+    "_predeploy:hosting:vue": "firebase hosting:sites:create calendar-activities-vue && firebase target:apply hosting vue calendar-activities-vue",
+    "_predeploy:hosting:react": "firebase target:apply hosting react calendar-activities",
+
     "serve:local": "npm --prefix vue npm run build && serve -s dist",
     "start": "npm --prefix vue npm run serve"
   },
