@@ -23,21 +23,22 @@ import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { z } from "zod";
 
 const emailSchema = z.string().email({ message: "Must be valid email" });
-const passwordSpecialSymbols = "^$*.[]{}()?\"!@#%&/,><':;|_~`".split("");
+
+// const passwordSpecialSymbols = "^$*.[]{}()?\"!@#%&/,><':;|_~`".split("");
 const passwordSchema = z
   .string()
   .min(5, { message: "Must be 5 or more characters long" })
-  .max(20, { message: "Must be less than 20 characters long" })
-  .refine(
-    (val) => {
-      return passwordSpecialSymbols.some((specialChar) =>
-        val.includes(specialChar),
-      );
-    },
-    {
-      message: "Must contain special characters",
-    },
-  );
+  .max(20, { message: "Must be less than 20 characters long" });
+//   .refine(
+//     (val) => {
+//       return passwordSpecialSymbols.some((specialChar) =>
+//         val.includes(specialChar),
+//       );
+//     },
+//     {
+//       message: "Must contain special characters",
+//     },
+//   );
 
 const safeParse = (schema: z.Schema, str: string): string => {
   const result = schema.safeParse(str);
@@ -143,7 +144,7 @@ function DialogLogin({ open, onClose }: DialogLoginProps) {
             onClick={handleOk}
             ml={6}
             variant="solid"
-            disabled={
+            isDisabled={
               !!localState.emailValidError || !!localState.passwordValidError
             }
           >

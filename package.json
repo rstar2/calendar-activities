@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "deploy": "npm --prefix vue run build && firebase deploy",
+    "deploy": "npm --prefix vue run build && npm --prefix react run build && firebase deploy",
     "deploy:db": "firebase deploy --only firestore",
     "deploy:functions": "firebase deploy --only functions",
     "deploy:functions-env": "node firebase-env.js",
