@@ -9,6 +9,7 @@ import {
   Text,
   Skeleton,
 } from "@chakra-ui/react";
+import { AddIcon, RepeatIcon } from "@chakra-ui/icons";
 
 import { useAuth } from "../cache/auth";
 import {
@@ -17,7 +18,6 @@ import {
   useActivityReset,
 } from "../cache/activities";
 import Activity, { getIcon } from "../types/Activity";
-import { AddIcon, RepeatIcon } from "@chakra-ui/icons";
 import Expander from "./Expander";
 
 function Activities() {
