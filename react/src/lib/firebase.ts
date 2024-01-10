@@ -19,9 +19,11 @@ import {
   onAuthStateChanged,
   signOut,
   signInWithEmailAndPassword,
+  signInWithPopup,
   Auth,
   User,
   NextOrObserver,
+  GoogleAuthProvider,
 } from "firebase/auth";
 import {
   getFunctions,
@@ -44,6 +46,7 @@ class Firebase {
   private readonly db: Firestore;
   private readonly functions: Functions;
   private readonly auth: Auth;
+  private readonly authGoogleProvider: GoogleAuthProvider;
   private readonly messaging: Messaging;
   //   private readonly ui: firebaseui.auth.AuthUI;
 
@@ -55,6 +58,8 @@ class Firebase {
     this.functions = getFunctions(app);
     this.auth = getAuth(app);
     this.messaging = getMessaging(app);
+
+    this.authGoogleProvider = new GoogleAuthProvider();
     // this.ui = new firebaseui.auth.AuthUI(this.auth);
   }
 
@@ -91,6 +96,11 @@ class Firebase {
     return onAuthStateChanged(this.auth, onNext);
   }
 
+  async signInWithGoogle(): Promise<void> {
+    // just try to sign-in - no matter the result is Promise<UserCredential>
+    return signInWithPopup(this.auth, this.authGoogleProvider).then();
+  }
+
   async signIn(email: string, password: string): Promise<void> {
     // just try to sign-in - no matter the result is Promise<UserCredential>
     return signInWithEmailAndPassword(this.auth, email, password).then();
@@ -119,7 +129,7 @@ class Firebase {
 
 const firebaseConfig: FirebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY!,
-  authDomain: import.meta.env.VITE_FIREBASE_API_KEY!,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN!,
   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID!,
   messagingSenderId: import.meta.env.VITE_FIREBASE_SENDER_ID!,
   appId: import.meta.env.VITE_FIREBASE_APP_ID!,

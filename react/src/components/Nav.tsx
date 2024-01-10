@@ -10,16 +10,22 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
-import { TbLogin, TbLogout, TbLoader2 } from "react-icons/tb";
+import { TbLogin, TbLogout, TbLoader2, TbBrandGoogle } from "react-icons/tb";
 
 import Expander from "./Expander";
 import DialogLogin from "./DialogLogin";
-import { useAuth, useAuthLogin, useAuthLogout } from "../cache/auth";
+import {
+  useAuth,
+  useAuthLogin,
+  useAuthLoginWithGoogle,
+  useAuthLogout,
+} from "../cache/auth";
 
 function Nav(props: StackProps) {
   const { colorMode, toggleColorMode } = useColorMode();
 
   const login = useAuthLogin();
+  const loginWithGoogle = useAuthLoginWithGoogle();
   const logout = useAuthLogout();
 
   const {
@@ -86,6 +92,15 @@ function Nav(props: StackProps) {
             aria-label={isKnown ? (isAuth ? "logout" : "login") : ""}
           />
         </Tooltip>
+        {isKnown && !isAuth && (
+          <IconButton
+            variant="ghost"
+            isRound
+            onClick={() => loginWithGoogle()}
+            icon={<TbBrandGoogle />}
+            aria-label="login with Google"
+          />
+        )}
       </Stack>
 
       <DialogLogin open={isOpenDialogLogin} onClose={handleLogin} />

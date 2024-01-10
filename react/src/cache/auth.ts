@@ -33,7 +33,7 @@ export function useAuth() {
 
 /**
  * Mutation to login.
- * Could use directly the firebase.signIn(), but thus all is wrapped hin one place,
+ * Could use directly the firebase.signIn(), but thus all is wrapped in one place,
  * and can reuse the mutations API
  */
 export function useAuthLogin() {
@@ -45,6 +45,24 @@ export function useAuthLogin() {
       email: string;
       password: string;
     }) => firebase.signIn(email, password),
+    // meta is used for success/failed notification on mutation result
+    meta: {
+      action: "Login",
+    },
+  });
+
+  // if needed can return the whole mutation, like loading, and error state
+  return mutation.mutateAsync;
+}
+
+/**
+ * Mutation to login with Google.
+ * Could use directly the firebase.signInWithGoogle(), but thus all is wrapped in one place,
+ * and can reuse the mutations API
+ */
+export function useAuthLoginWithGoogle() {
+  const mutation = useMutation({
+    mutationFn: async () => firebase.signInWithGoogle(),
     // meta is used for success/failed notification on mutation result
     meta: {
       action: "Login",
