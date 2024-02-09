@@ -4,7 +4,6 @@ import {
   IconButton,
   Stack,
   Heading,
-  Tooltip,
   type StackProps,
   useColorMode,
   useDisclosure,
@@ -12,6 +11,7 @@ import {
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { TbLogin, TbLogout, TbLoader2, TbBrandGoogle } from "react-icons/tb";
 
+import TooltipMobile from "./TooltipMobile";
 import Expander from "./Expander";
 import DialogLogin from "./DialogLogin";
 import {
@@ -61,7 +61,9 @@ function Nav(props: StackProps) {
 
         <Expander />
 
-        <Tooltip label={colorMode === "light" ? "Dark mode" : "Light mode"}>
+        <TooltipMobile
+          label={colorMode === "light" ? "Dark mode" : "Light mode"}
+        >
           <IconButton
             variant="ghost"
             isRound
@@ -69,9 +71,9 @@ function Nav(props: StackProps) {
             icon={colorMode === "light" ? <MoonIcon /> : <SunIcon />}
             aria-label="color mode"
           />
-        </Tooltip>
+        </TooltipMobile>
 
-        <Tooltip
+        <TooltipMobile
           label={isKnown ? (isAuth ? "Logout" : "Login") : "Checking..."}
         >
           <IconButton
@@ -91,7 +93,7 @@ function Nav(props: StackProps) {
             }
             aria-label={isKnown ? (isAuth ? "logout" : "login") : ""}
           />
-        </Tooltip>
+        </TooltipMobile>
         {isKnown && !isAuth && (
           <IconButton
             variant="ghost"

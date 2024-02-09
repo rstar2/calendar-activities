@@ -4,7 +4,6 @@ import {
   HStack,
   List,
   ListItem,
-  Tooltip,
   IconButton,
   Text,
   Skeleton,
@@ -19,6 +18,7 @@ import {
 } from "../cache/activities";
 import Activity, { getIcon } from "../types/Activity";
 import Expander from "./Expander";
+import TooltipMobile from "./TooltipMobile";
 
 function Activities() {
   const {
@@ -57,7 +57,7 @@ function Activities() {
                 {isAuth && (
                   <>
                     <Expander />
-                    <Tooltip label="Increment">
+                    <TooltipMobile label="Increment">
                       <IconButton
                         variant="ghost"
                         isRound
@@ -66,8 +66,8 @@ function Activities() {
                         icon={<AddIcon />}
                         aria-label="increment"
                       />
-                    </Tooltip>
-                    <Tooltip label="Reset">
+                    </TooltipMobile>
+                    <TooltipMobile label="Reset">
                       <IconButton
                         variant="ghost"
                         isRound
@@ -76,7 +76,7 @@ function Activities() {
                         icon={<RepeatIcon />}
                         aria-label="reset"
                       />
-                    </Tooltip>
+                    </TooltipMobile>
                   </>
                 )}
               </HStack>
