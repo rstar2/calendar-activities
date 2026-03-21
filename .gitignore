@@ -13,3 +13,8 @@ firebase-debug.log
 # local env files
 .env.local
 .env.*.local
+
+.vscode/symbols.json
+
+# NOT READY YET
+native
