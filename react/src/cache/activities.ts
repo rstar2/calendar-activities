@@ -11,8 +11,9 @@ const collection = firebase.collection(
 
 // the Firebase Firestore DB is protected from unauthorized add/update/delete
 // so use a Firebase Callable Functions
-const activitiesAddFn = firebase.httpsCallable("activitiesAdd");
-const activitiesResetFn = firebase.httpsCallable("activitiesReset");
+const activityIncreaseFn = firebase.httpsCallable("activityIncrease");
+const activityDecreaseFn = firebase.httpsCallable("activityDecrease");
+const activityResetFn = firebase.httpsCallable("activityReset");
 
 firebase.onSnapshot(collection, (snapshot: QuerySnapshot) => {
   const activities = parseDocs(snapshot) as Activity[];
@@ -38,8 +39,8 @@ export function useActivities() {
  */
 export function useActivityReset() {
   const mutation = useMutation({
-    mutationFn: async (activityId: string) => {
-      await activitiesResetFn({ id: activityId }).then((result) => result.data);
+    mutationFn: async (activityId: string, total?: number) => {
+      await activityResetFn({ id: activityId, total }).then((result) => result.data);
     },
     // meta is used for success/failed notification on mutation result
     meta: {
@@ -54,16 +55,37 @@ export function useActivityReset() {
 /**
  * Mutation for "incrementing" an Activity.
  */
-export function useActivityIncrement() {
+export function useActivityIncrease() {
   const mutation = useMutation({
     mutationFn: async (activityId: string) => {
-      await activitiesAddFn({ id: activityId, count: 1 }).then(
+      await activityIncreaseFn({ id: activityId, count: 1 }).then(
         (result) => result.data,
       );
     },
     // meta is used for success/failed notification on mutation result
     meta: {
-      action: ["Activity", "Increment"],
+      action: ["Activity", "Increase"],
+    },
+  });
+
+  // if needed can return the whole mutation, like loading, and error state
+  return mutation.mutateAsync;
+}
+
+
+/**
+ * Mutation for "decreasing" an Activity.
+ */
+export function useActivityDecrease() {
+  const mutation = useMutation({
+    mutationFn: async (activityId: string) => {
+      await activityDecreaseFn({ id: activityId, count: 1 }).then(
+        (result) => result.data,
+      );
+    },
+    // meta is used for success/failed notification on mutation result
+    meta: {
+      action: ["Activity", "Decrease"],
     },
   });
 

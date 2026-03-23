@@ -1,14 +1,16 @@
-type Activity = {
+export type Activity = {
   id: string;
   type: string;
   name: string;
   user: string;
-  current: number;
+  total?: number;
   cycle?: number;
-  total: number;
-};
+} & ({
+    current: number;
+} | {
+    left: number
+});
 
-export default Activity;
 
 export function getIcon({ type }: Activity): string {
   switch (type) {

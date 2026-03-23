@@ -22,32 +22,31 @@
       ]
     },
     {
-        "target": "react",
-        "public": "./react/dist",
-        "rewrites": [
-          {
-            "source": "**",
-            "destination": "/index.html"
-          }
-        ],
-        "headers": [
-          {
-            "source": "**/*.@(js|html)",
-            "headers": [
-              {
-                "key": "Cache-Control",
-                "value": "max-age=0"
-              }
-            ]
-          }
-        ]
-      }
+      "target": "react",
+      "public": "./react/dist",
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ],
+      "headers": [
+        {
+          "source": "**/*.@(js|html)",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "max-age=0"
+            }
+          ]
+        }
+      ]
+    }
   ],
   "firestore": {
     "rules": "firebase.firestore.rules"
+  },
+  "functions": {
+    //   "predeploy": ["node firebase-env.js", "npm --prefix functions install"]
   }
-  //   ,
-  //   "functions": {
-  //     "predeploy": ["node firebase-env.js", "npm --prefix functions install"]
-  //   }
 }

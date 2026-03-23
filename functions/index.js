@@ -33,10 +33,10 @@ const activities = db.collection(collactivities);
  *
  * Increase an activity
  */
-exports.activitiesAdd = functions.https.onCall(async (data, context) => {
+exports.activityIncrease = functions.https.onCall(async (data, context) => {
   checkAuthorized(context);
 
-  functions.logger.info("ActivitiesAdd :", data);
+  functions.logger.info("ActivityIncrease:", data);
 
   const { id, count } = data;
 
@@ -45,15 +45,49 @@ exports.activitiesAdd = functions.https.onCall(async (data, context) => {
     .get()
     .then((docSnapshot) => docSnapshot.data());
 
-  let current = activity.current + count;
-  if (activity.cycle) current = current % activity.cycle;
+  let current = activity.current !== undefined ? activity.current + count : undefined;
+  if (current !== undefined && activity.cycle) current = current % activity.cycle;
+
   let total = activity.total !== undefined ? activity.total + count : undefined;
+
   await activities.doc(id).set(
     {
-      current: current,
-      total: total,
+      current,
+      total,
     },
-    { merge: true }
+    { merge: true },
+  );
+  return true;
+});
+
+/**
+ * This is HTTPS callable function
+ *
+ * Decrease an activity
+ */
+exports.activityDecrease = functions.https.onCall(async (data, context) => {
+  checkAuthorized(context);
+
+  functions.logger.info("ActivityDecrease:", data);
+
+  const { id, count } = data;
+
+  const activity = await activities
+    .doc(id)
+    .get()
+    .then((docSnapshot) => docSnapshot.data());
+
+  let left = activity.left !== undefined ? activity.left - count : undefined;
+  if (left !== undefined && activity.cycle) left = ((left % activity.cycle) + activity.cycle) % activity.cycle;
+
+  let total = activity.total !== undefined ? activity.total + count : undefined;
+
+  await activities.doc(id).set(
+    {
+      left,
+      total,
+    },
+    { merge: true },
   );
   return true;
 });
@@ -63,23 +97,28 @@ exports.activitiesAdd = functions.https.onCall(async (data, context) => {
  *
  * Reset activity's cycle
  */
-exports.activitiesReset = functions.https.onCall(async (data, context) => {
+exports.activityReset = functions.https.onCall(async (data, context) => {
   checkAuthorized(context);
 
-  functions.logger.info("ActivitiesReset :", data);
+  functions.logger.info("ActivitiesReset:", data);
 
-  const { id } = data;
+  const { id, newCycle } = data;
 
   const activity = await activities
     .doc(id)
     .get()
     .then((docSnapshot) => docSnapshot.data());
 
+  const cycle = newCycle !== undefined ? newCycle : activity.cycle;
+  if (cycle === undefined) throw new Error(`Cannot reset non-cycling activity`);
+
   await activities.doc(id).set(
     {
-      current: 0,
+      current: activity.current !== undefined ? 0 : undefined,
+      left: activity.left !== undefined ? cycle : undefined,
+      cycle,
     },
-    { merge: true }
+    { merge: true },
   );
   return true;
 });

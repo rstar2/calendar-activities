@@ -37,7 +37,6 @@ export const queryClient = new QueryClient({
     onSettled(_data, error, query) {
       const { meta } = query;
 
-      showNotification(meta as CacheMeta, error);
       // if (queryKey[0] === "admin")
 
       // show success notification - only for mutations with meta key
