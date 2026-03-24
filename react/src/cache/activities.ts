@@ -119,7 +119,9 @@ export function useActivityUpdate() {
  */
 export function useActivityAdd() {
   const mutation = useMutation({
-    mutationFn: async (activity: Partial<Activity>) => {
+    mutationFn: async (
+      activity: Partial<Activity> & { current?: number; left?: number },
+    ) => {
       await activityAddFn(activity).then((r) => r.data);
     },
     // meta is used for success/failed notification on mutation result

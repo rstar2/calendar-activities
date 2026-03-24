@@ -15,11 +15,26 @@ import {
   ModalOverlay,
   NumberInput,
   NumberInputField,
+  Radio,
+  RadioGroup,
   Select,
+  Stack,
+  Text,
 } from "@chakra-ui/react";
 
 import { z } from "zod";
 import type { Activity } from "../types/Activity";
+
+// Type for dialog output - allows both current and left as optional
+// because we may be setting just one of them
+type ActivityInput = {
+  name?: string;
+  type?: string;
+  total?: number;
+  cycle?: number;
+  current?: number;
+  left?: number;
+};
 
 const activityTypes = [
   { value: "climbing", label: "🧗 climbing" },
@@ -30,14 +45,16 @@ const activityTypes = [
   { value: "music", label: "🎵 music" },
 ] as const;
 
+type CounterType = "current" | "left" | null;
+
 const nameSchema = z
   .string()
   .min(1, { message: "Name is required" })
   .max(50, { message: "Name must be 50 characters or less" });
 
-const positiveNumberSchema = z
+const nonNegativeNumberSchema = z
   .number()
-  .positive({ message: "Must be a positive number" })
+  .nonnegative({ message: "Must be zero or positive" })
   .or(z.literal(undefined));
 
 const safeParse = (schema: z.Schema, value: unknown): string => {
@@ -51,19 +68,23 @@ interface FormState {
   type: string;
   total: string;
   cycle: string;
+  counterType: CounterType;
+  current: string;
+  left: string;
   nameError: string;
   totalError: string;
   cycleError: string;
+  counterError: string;
 }
 
 interface DialogActivityAddOrEditProps {
   open: boolean;
   disabled: boolean;
-  onClose: (value?: Partial<Activity>) => void;
+  onClose: (value?: ActivityInput) => void;
   activity?: Activity;
 }
 
-function DialogActivityAddOrEdit({
+export default function DialogActivityAddOrEdit({
   open,
   disabled,
   onClose,
@@ -74,22 +95,33 @@ function DialogActivityAddOrEdit({
     type: "climbing",
     total: "",
     cycle: "",
+    counterType: null,
+    current: "",
+    left: "",
     nameError: "",
     totalError: "",
     cycleError: "",
+    counterError: "",
   });
 
   // Populate form when activity changes
   useEffect(() => {
     if (activity) {
+      // Determine counter type from existing activity
+      const counterType: CounterType = "left" in activity ? "left" : "current";
+
       setLocalState({
         name: activity.name,
         type: activity.type,
         total: activity.total?.toString() || "",
         cycle: activity.cycle?.toString() || "",
+        counterType,
+        current: "current" in activity ? activity.current.toString() : "",
+        left: "left" in activity ? activity.left.toString() : "",
         nameError: "",
         totalError: "",
         cycleError: "",
+        counterError: "",
       });
     } else {
       setLocalState({
@@ -97,9 +129,13 @@ function DialogActivityAddOrEdit({
         type: "climbing",
         total: "",
         cycle: "",
+        counterType: null,
+        current: "",
+        left: "",
         nameError: "",
         totalError: "",
         cycleError: "",
+        counterError: "",
       });
     }
   }, [activity, open, setLocalState]);
@@ -128,7 +164,7 @@ function DialogActivityAddOrEdit({
     (valueAsString: string, valueAsNumber: number) => {
       setLocalState({
         total: valueAsString,
-        totalError: safeParse(positiveNumberSchema, valueAsNumber),
+        totalError: safeParse(nonNegativeNumberSchema, valueAsNumber),
       });
     },
     [setLocalState],
@@ -138,7 +174,45 @@ function DialogActivityAddOrEdit({
     (valueAsString: string, valueAsNumber: number) => {
       setLocalState({
         cycle: valueAsString,
-        cycleError: safeParse(positiveNumberSchema, valueAsNumber),
+        cycleError: safeParse(nonNegativeNumberSchema, valueAsNumber),
+      });
+    },
+    [setLocalState],
+  );
+
+  const handleCounterTypeChange = useCallback(
+    (value: string) => {
+      setLocalState({
+        counterType: value as CounterType,
+        current: "",
+        left: "",
+        counterError: "",
+      });
+    },
+    [setLocalState],
+  );
+
+  const handleCurrentChange = useCallback(
+    (valueAsString: string, valueAsNumber: number) => {
+      setLocalState({
+        current: valueAsString,
+        counterError: safeParse(
+          nonNegativeNumberSchema,
+          isNaN(valueAsNumber) ? undefined : valueAsNumber,
+        ),
+      });
+    },
+    [setLocalState],
+  );
+
+  const handleLeftChange = useCallback(
+    (valueAsString: string, valueAsNumber: number) => {
+      setLocalState({
+        left: valueAsString,
+        counterError: safeParse(
+          nonNegativeNumberSchema,
+          isNaN(valueAsNumber) ? undefined : valueAsNumber,
+        ),
       });
     },
     [setLocalState],
@@ -152,31 +226,78 @@ function DialogActivityAddOrEdit({
     // Validate all fields
     const nameError = safeParse(nameSchema, localState.name);
     const totalError = safeParse(
-      positiveNumberSchema,
+      nonNegativeNumberSchema,
       localState.total ? Number(localState.total) : undefined,
     );
     const cycleError = safeParse(
-      positiveNumberSchema,
+      nonNegativeNumberSchema,
       localState.cycle ? Number(localState.cycle) : undefined,
     );
 
-    if (nameError || totalError || cycleError) {
-      setLocalState({ nameError, totalError, cycleError });
+    // Validate counter field based on counter type
+    let counterError = "";
+    if (!activity) {
+      // New activity - must have counter type selected and value
+      if (!localState.counterType) {
+        counterError = "Please select a counter type";
+      } else {
+        const counterValue =
+          localState.counterType === "current"
+            ? localState.current
+            : localState.left;
+        counterError = safeParse(
+          nonNegativeNumberSchema,
+          counterValue ? Number(counterValue) : undefined,
+        );
+      }
+    } else {
+      // Editing - only validate if counter type is being set
+      const counterValue =
+        localState.counterType === "current"
+          ? localState.current
+          : localState.left;
+      counterError = safeParse(
+        nonNegativeNumberSchema,
+        counterValue ? Number(counterValue) : undefined,
+      );
+    }
+
+    if (nameError || totalError || cycleError || counterError) {
+      setLocalState({ nameError, totalError, cycleError, counterError });
       return;
     }
 
-    onClose({
+    const result: ActivityInput = {
       name: localState.name,
       type: localState.type,
       total: localState.total ? Number(localState.total) : undefined,
       cycle: localState.cycle ? Number(localState.cycle) : undefined,
-    });
+    };
+
+    // Add counter value if provided
+    if (localState.counterType === "current" && localState.current) {
+      result.current = Number(localState.current);
+    } else if (localState.counterType === "left" && localState.left) {
+      result.left = Number(localState.left);
+    }
+
+    onClose(result);
   };
 
   const hasErrors =
     !!localState.nameError ||
     !!localState.totalError ||
-    !!localState.cycleError;
+    !!localState.cycleError ||
+    !!localState.counterError;
+
+  // For editing: check if counter can be changed (only if currently undefined)
+  const canEditCounter =
+    !activity ||
+    (localState.counterType === "current" && !("current" in activity)) ||
+    (localState.counterType === "left" && !("left" in activity));
+
+  // Show counter type selector only for new activities
+  const showCounterTypeSelector = !activity;
 
   return (
     <Modal
@@ -235,6 +356,70 @@ function DialogActivityAddOrEdit({
             </NumberInput>
             <FormErrorMessage>{localState.cycleError}</FormErrorMessage>
           </FormControl>
+
+          {localState.counterType === "current" && (
+            <FormControl
+              mt={4}
+              isRequired={showCounterTypeSelector}
+              isInvalid={!!localState.counterError}
+            >
+              <FormLabel>Current</FormLabel>
+              <NumberInput
+                value={localState.current}
+                onChange={handleCurrentChange}
+                min={0}
+              >
+                <NumberInputField placeholder="Current count" />
+              </NumberInput>
+              <FormErrorMessage>{localState.counterError}</FormErrorMessage>
+            </FormControl>
+          )}
+
+          {localState.counterType === "left" && (
+            <FormControl
+              mt={4}
+              isRequired={showCounterTypeSelector}
+              isInvalid={!!localState.counterError}
+            >
+              <FormLabel>Left</FormLabel>
+              <NumberInput
+                value={localState.left}
+                onChange={handleLeftChange}
+                min={0}
+              >
+                <NumberInputField placeholder="Left count" />
+              </NumberInput>
+              <FormErrorMessage>{localState.counterError}</FormErrorMessage>
+            </FormControl>
+          )}
+          {showCounterTypeSelector ? (
+            <FormControl
+              mt={4}
+              isRequired
+              isInvalid={!!localState.counterError}
+            >
+              <RadioGroup
+                value={localState.counterType || ""}
+                onChange={handleCounterTypeChange}
+              >
+                <Stack direction="row">
+                  <Radio value="current">Current (counts up)</Radio>
+                  <Radio value="left">Left (counts down)</Radio>
+                </Stack>
+              </RadioGroup>
+              <FormErrorMessage>{localState.counterError}</FormErrorMessage>
+            </FormControl>
+          ) : (
+            <FormControl mt={4}>
+              <Text color="gray.500">
+                {localState.counterType === "current"
+                  ? "Current (counts up)"
+                  : "Left (counts down)"}
+                {" - "}
+                {canEditCounter ? "can be set" : "cannot be changed"}
+              </Text>
+            </FormControl>
+          )}
         </ModalBody>
 
         <ModalFooter>
@@ -252,5 +437,3 @@ function DialogActivityAddOrEdit({
     </Modal>
   );
 }
-
-export default DialogActivityAddOrEdit;

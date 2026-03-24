@@ -134,22 +134,30 @@ exports.activityAdd = functions.https.onCall(async (data, context) => {
 
   functions.logger.info("ActivityAdd:", data);
 
-  const { name, type, total, cycle } = data;
+  const { name, type, total, cycle, current, left } = data;
 
   // Validate required fields
   if (!name || !type) {
     throw new functions.https.HttpsError("invalid-argument", "Name and type are required");
   }
 
+  // Validate that only one counter type is provided
+  if (current !== undefined && left !== undefined) {
+    throw new functions.https.HttpsError("invalid-argument", "Cannot set both current and left");
+  }
+
   // Create new activity with user's uid
-  const docRef = await activities.add({
+  const activityData = {
     name,
     type,
     user: context.auth.uid,
-    total: total || undefined,
-    cycle: cycle || undefined,
-    current: 0,
-  });
+    total,
+    cycle,
+    current,
+    left,
+  };
+
+s  const docRef = await activities.add(activityData);
 
   return { id: docRef.id };
 });

@@ -53,7 +53,7 @@ type DialogLoginProps = {
   onClose: (value?: { email: string; password: string }) => void;
 };
 
-function DialogLogin({ open, onClose }: DialogLoginProps) {
+export default function DialogLogin({ open, onClose }: DialogLoginProps) {
   const [localState, setLocalState] = useSetState({
     email: "",
     emailValidError: "",
@@ -155,5 +155,3 @@ function DialogLogin({ open, onClose }: DialogLoginProps) {
     </Modal>
   );
 }
-
-export default DialogLogin;
