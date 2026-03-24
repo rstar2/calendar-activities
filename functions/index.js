@@ -127,6 +127,36 @@ exports.activityReset = functions.https.onCall(async (data, context) => {
 /**
  * This is HTTPS callable function
  *
+ * Add a new activity
+ */
+exports.activityAdd = functions.https.onCall(async (data, context) => {
+  checkAuthorized(context);
+
+  functions.logger.info("ActivityAdd:", data);
+
+  const { name, type, total, cycle } = data;
+
+  // Validate required fields
+  if (!name || !type) {
+    throw new functions.https.HttpsError("invalid-argument", "Name and type are required");
+  }
+
+  // Create new activity with user's uid
+  const docRef = await activities.add({
+    name,
+    type,
+    user: context.auth.uid,
+    total: total || undefined,
+    cycle: cycle || undefined,
+    current: 0,
+  });
+
+  return { id: docRef.id };
+});
+
+/**
+ * This is HTTPS callable function
+ *
  * Update an activity's properties
  */
 exports.activityUpdate = functions.https.onCall(async (data, context) => {

@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 
 import {
   IconButton,
@@ -9,17 +9,26 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
-import { TbLogin, TbLogout, TbLoader2, TbBrandGoogle } from "react-icons/tb";
+import {
+  TbLogin,
+  TbLogout,
+  TbLoader2,
+  TbBrandGoogle,
+  TbActivity,
+} from "react-icons/tb";
 
 import TooltipMobile from "./TooltipMobile";
 import Expander from "./Expander";
 import DialogLogin from "./DialogLogin";
+import DialogActivityAddOrEdit from "./DialogActivityAddOrEdit";
 import {
   useAuth,
   useAuthLogin,
   useAuthLoginWithGoogle,
   useAuthLogout,
 } from "../cache/auth";
+import { useActivityAdd } from "../cache/activities";
+import { Activity } from "../types/Activity";
 
 function Nav(props: StackProps) {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -38,10 +47,13 @@ function Nav(props: StackProps) {
     onClose: closeDialogLogin,
   } = useDisclosure({ defaultIsOpen: false });
 
+  const [isAddDialogOpen, setAddDialogOpen] = useState(false);
+  const [activityAdd, isAddPending] = useActivityAdd();
+
   const loginOrLogout = useCallback(() => {
     if (isAuth) logout();
     else openDialogLogin();
-  }, [isAuth]);
+  }, [isAuth, logout, openDialogLogin]);
 
   const handleLogin = useCallback(
     async (credentials?: { email: string; password: string }) => {
@@ -51,7 +63,15 @@ function Nav(props: StackProps) {
       // close dialog (only if canceled or successful login)
       closeDialogLogin();
     },
-    [],
+    [login, closeDialogLogin],
+  );
+
+  const handleActivityCreate = useCallback(
+    async (activity?: Partial<Activity>) => {
+      if (activity) await activityAdd(activity);
+      setAddDialogOpen(false);
+    },
+    [setAddDialogOpen, activityAdd],
   );
 
   return (
@@ -94,6 +114,19 @@ function Nav(props: StackProps) {
             aria-label={isKnown ? (isAuth ? "logout" : "login") : ""}
           />
         </TooltipMobile>
+
+        {isAuth && (
+          <TooltipMobile label="Add activity">
+            <IconButton
+              variant="ghost"
+              isRound
+              onClick={() => setAddDialogOpen(true)}
+              icon={<TbActivity />}
+              aria-label="add activity"
+            />
+          </TooltipMobile>
+        )}
+
         {isKnown && !isAuth && (
           <IconButton
             variant="ghost"
@@ -106,6 +139,12 @@ function Nav(props: StackProps) {
       </Stack>
 
       <DialogLogin open={isOpenDialogLogin} onClose={handleLogin} />
+
+      <DialogActivityAddOrEdit
+        open={isAddDialogOpen}
+        disabled={isAddPending}
+        onClose={handleActivityCreate}
+      />
     </>
   );
 }

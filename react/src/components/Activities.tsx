@@ -149,9 +149,9 @@ function Activities() {
 
   const handleActivityEdit = useCallback(
     async (updates?: Partial<Activity>) => {
-      if (editingActivity && updates) {
+      if (editingActivity && updates)
         await activityUpdate({ id: editingActivity.id, updates });
-      }
+
       setEditingActivity(undefined);
     },
     [editingActivity, activityUpdate],

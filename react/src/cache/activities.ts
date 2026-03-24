@@ -15,6 +15,7 @@ const activityIncreaseFn = firebase.httpsCallable("activityIncrease");
 const activityDecreaseFn = firebase.httpsCallable("activityDecrease");
 const activityResetFn = firebase.httpsCallable("activityReset");
 const activityUpdateFn = firebase.httpsCallable("activityUpdate");
+const activityAddFn = firebase.httpsCallable("activityAdd");
 
 firebase.onSnapshot(collection, (snapshot: QuerySnapshot) => {
   const activities = parseDocs(snapshot) as Activity[];
@@ -106,6 +107,24 @@ export function useActivityUpdate() {
     // meta is used for success/failed notification on mutation result
     meta: {
       action: ["Activity", "Updated"],
+    },
+  });
+
+  // if needed can return the whole mutation, like loading, and error state
+  return [mutation.mutateAsync, mutation.isPending] as const;
+}
+
+/**
+ * Mutation for "adding" an Activity.
+ */
+export function useActivityAdd() {
+  const mutation = useMutation({
+    mutationFn: async (activity: Partial<Activity>) => {
+      await activityAddFn(activity).then((r) => r.data);
+    },
+    // meta is used for success/failed notification on mutation result
+    meta: {
+      action: ["Activity", "Added"],
     },
   });
 
