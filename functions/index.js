@@ -157,7 +157,7 @@ exports.activityAdd = functions.https.onCall(async (data, context) => {
     left,
   };
 
-s  const docRef = await activities.add(activityData);
+  const docRef = await activities.add(activityData);
 
   return { id: docRef.id };
 });
