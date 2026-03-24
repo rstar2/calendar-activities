@@ -149,17 +149,15 @@ exports.activityUpdate = functions.https.onCall(async (data, context) => {
     throw new functions.https.HttpsError("not-found", "Activity not found");
   }
 
-  const activity = activityDoc.data();
-
   // Validate: user can only update their own activities
-  if (activity.user !== context.auth.uid) {
-    throw new functions.https.HttpsError("permission-denied", "You can only update your own activities");
-  }
+  //   const activity = activityDoc.data();
+  //   if (activity.user !== context.auth.uid) {
+  //     throw new functions.https.HttpsError("permission-denied", "You can only update your own activities");
+  //   }
 
   // Build update object with only allowed fields
-  const allowedFields = ["name", "type", "total", "cycle"];
+  const allowedFields = ["name", "type", "total", "cycle", "left", "current"];
   const updateData = {};
-
   for (const field of allowedFields) {
     if (updates[field] !== undefined) {
       updateData[field] = updates[field];

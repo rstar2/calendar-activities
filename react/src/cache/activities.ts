@@ -67,7 +67,7 @@ export function useActivityIncrease() {
     },
     // meta is used for success/failed notification on mutation result
     meta: {
-      action: ["Activity", "Increase"],
+      action: ["Activity", "Increased"],
     },
   });
 
@@ -87,7 +87,7 @@ export function useActivityDecrease() {
     },
     // meta is used for success/failed notification on mutation result
     meta: {
-      action: ["Activity", "Decrease"],
+      action: ["Activity", "Decreased"],
     },
   });
 
@@ -105,10 +105,10 @@ export function useActivityUpdate() {
     },
     // meta is used for success/failed notification on mutation result
     meta: {
-      action: ["Activity", "Update"],
+      action: ["Activity", "Updated"],
     },
   });
 
   // if needed can return the whole mutation, like loading, and error state
-  return mutation.mutateAsync;
+  return [mutation.mutateAsync, mutation.isPending] as const;
 }

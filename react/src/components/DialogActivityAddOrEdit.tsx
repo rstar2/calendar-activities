@@ -58,12 +58,14 @@ interface FormState {
 
 interface DialogActivityAddOrEditProps {
   open: boolean;
+  disabled: boolean;
   onClose: (value?: Partial<Activity>) => void;
   activity?: Activity;
 }
 
 function DialogActivityAddOrEdit({
   open,
+  disabled,
   onClose,
   activity,
 }: DialogActivityAddOrEditProps) {
@@ -241,7 +243,7 @@ function DialogActivityAddOrEdit({
             onClick={handleOk}
             ml={6}
             variant="solid"
-            isDisabled={hasErrors || !localState.name}
+            isDisabled={disabled || hasErrors || !localState.name}
           >
             {activity ? "Save" : "Add"}
           </Button>

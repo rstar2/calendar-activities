@@ -26,7 +26,7 @@ import DialogActivityAddOrEdit from "./DialogActivityAddOrEdit";
 interface ActivityItemProps {
   activity: Activity;
   isAuth: boolean;
-  disabled: Record<string, true>;
+  isDisabled: boolean;
   onIncrement: (activity: Activity) => void;
   onDecrement: (activity: Activity) => void;
   onReset: (activity: Activity) => void;
@@ -36,7 +36,7 @@ interface ActivityItemProps {
 function ActivityItem({
   activity,
   isAuth,
-  disabled,
+  isDisabled,
   onIncrement,
   onDecrement,
   onReset,
@@ -65,7 +65,7 @@ function ActivityItem({
                 <IconButton
                   variant="ghost"
                   isRound
-                  isDisabled={!isAuth || disabled[activity.id]}
+                  isDisabled={!isAuth || isDisabled}
                   onClick={() => onIncrement(activity)}
                   icon={<AddIcon />}
                   aria-label="increment"
@@ -78,7 +78,7 @@ function ActivityItem({
                 <IconButton
                   variant="ghost"
                   isRound
-                  isDisabled={!isAuth || disabled[activity.id]}
+                  isDisabled={!isAuth || isDisabled}
                   onClick={() => onDecrement(activity)}
                   icon={<MinusIcon />}
                   aria-label="decrement"
@@ -91,7 +91,7 @@ function ActivityItem({
                 <IconButton
                   variant="ghost"
                   isRound
-                  isDisabled={!isAuth || disabled[activity.id]}
+                  isDisabled={!isAuth || isDisabled}
                   onClick={() => onReset(activity)}
                   icon={<RepeatIcon />}
                   aria-label="reset"
@@ -111,7 +111,7 @@ function Activities() {
   } = useAuth();
 
   const [disabled, { set: setDisabled, remove: removeDisabled }] = useMap(
-    {} as Record<string, true>,
+    {} as Record<string, true | undefined>,
   );
 
   const { data: activities } = useActivities();
@@ -119,9 +119,9 @@ function Activities() {
   const activityIncrement = useActivityIncrease();
   const activityDecrement = useActivityDecrease();
   const activityReset = useActivityReset();
-  const activityUpdate = useActivityUpdate();
 
-  const [editingActivity, setEditingActivity] = useState<Activity | null>(null);
+  const [activityUpdate, isUpdatePending] = useActivityUpdate();
+  const [editingActivity, setEditingActivity] = useState<Activity>();
 
   const handleActivityIncrement = useCallback(
     ({ id }: Activity) => {
@@ -147,12 +147,12 @@ function Activities() {
     [setDisabled, removeDisabled, activityReset],
   );
 
-  const handleEditDialogClose = useCallback(
+  const handleActivityEdit = useCallback(
     async (updates?: Partial<Activity>) => {
       if (editingActivity && updates) {
         await activityUpdate({ id: editingActivity.id, updates });
       }
-      setEditingActivity(null);
+      setEditingActivity(undefined);
     },
     [editingActivity, activityUpdate],
   );
@@ -169,7 +169,7 @@ function Activities() {
                 key={activity.id}
                 activity={activity}
                 isAuth={isAuth}
-                disabled={disabled}
+                isDisabled={!!disabled[activity.id] || isUpdatePending}
                 onIncrement={handleActivityIncrement}
                 onDecrement={handleActivityDecrement}
                 onReset={handleActivityReset}
@@ -182,7 +182,8 @@ function Activities() {
         <DialogActivityAddOrEdit
           open={!!editingActivity}
           activity={editingActivity}
-          onClose={handleEditDialogClose}
+          disabled={isUpdatePending}
+          onClose={handleActivityEdit}
         />
       )}
     </>
