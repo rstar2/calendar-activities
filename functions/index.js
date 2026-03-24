@@ -20,6 +20,7 @@ db.settings({ ignoreUndefinedProperties: true });
 // that are set using the firebase-env.js utility
 const { collusers, collactivities } = functionsConfig.db;
 
+// eslint-disable-next-line no-unused-vars
 const users = db.collection(collusers);
 const activities = db.collection(collactivities);
 
@@ -110,7 +111,7 @@ exports.activityReset = functions.https.onCall(async (data, context) => {
     .then((docSnapshot) => docSnapshot.data());
 
   const cycle = newCycle !== undefined ? newCycle : activity.cycle;
-  if (cycle === undefined) throw new Error(`Cannot reset non-cycling activity`);
+  if (cycle === undefined) throw new Error("Cannot reset non-cycling activity");
 
   await activities.doc(id).set(
     {
@@ -120,6 +121,52 @@ exports.activityReset = functions.https.onCall(async (data, context) => {
     },
     { merge: true },
   );
+  return true;
+});
+
+/**
+ * This is HTTPS callable function
+ *
+ * Update an activity's properties
+ */
+exports.activityUpdate = functions.https.onCall(async (data, context) => {
+  checkAuthorized(context);
+
+  functions.logger.info("ActivityUpdate:", data);
+
+  const { id, updates } = data;
+
+  if (!id) {
+    throw new functions.https.HttpsError("invalid-argument", "Activity ID is required");
+  }
+
+  if (!updates || typeof updates !== "object") {
+    throw new functions.https.HttpsError("invalid-argument", "Updates object is required");
+  }
+
+  const activityDoc = await activities.doc(id).get();
+  if (!activityDoc.exists) {
+    throw new functions.https.HttpsError("not-found", "Activity not found");
+  }
+
+  const activity = activityDoc.data();
+
+  // Validate: user can only update their own activities
+  if (activity.user !== context.auth.uid) {
+    throw new functions.https.HttpsError("permission-denied", "You can only update your own activities");
+  }
+
+  // Build update object with only allowed fields
+  const allowedFields = ["name", "type", "total", "cycle"];
+  const updateData = {};
+
+  for (const field of allowedFields) {
+    if (updates[field] !== undefined) {
+      updateData[field] = updates[field];
+    }
+  }
+
+  await activities.doc(id).set(updateData, { merge: true });
   return true;
 });
 

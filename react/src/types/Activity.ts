@@ -5,12 +5,14 @@ export type Activity = {
   user: string;
   total?: number;
   cycle?: number;
-} & ({
-    current: number;
-} | {
-    left: number
-});
-
+} & (
+  | {
+      current: number;
+    }
+  | {
+      left: number;
+    }
+);
 
 export function getIcon({ type }: Activity): string {
   switch (type) {

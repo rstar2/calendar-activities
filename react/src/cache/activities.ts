@@ -3,7 +3,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 
 import firebase, { parseDocs } from "../lib/firebase";
 import { queryClient } from "./index";
-import type Activity from "../types/Activity";
+import type { Activity } from "../types/Activity";
 
 const collection = firebase.collection(
   import.meta.env.VITE_FIREBASE_COLL_ACTIVITIES!,
@@ -14,6 +14,7 @@ const collection = firebase.collection(
 const activityIncreaseFn = firebase.httpsCallable("activityIncrease");
 const activityDecreaseFn = firebase.httpsCallable("activityDecrease");
 const activityResetFn = firebase.httpsCallable("activityReset");
+const activityUpdateFn = firebase.httpsCallable("activityUpdate");
 
 firebase.onSnapshot(collection, (snapshot: QuerySnapshot) => {
   const activities = parseDocs(snapshot) as Activity[];
@@ -40,7 +41,9 @@ export function useActivities() {
 export function useActivityReset() {
   const mutation = useMutation({
     mutationFn: async (activityId: string, total?: number) => {
-      await activityResetFn({ id: activityId, total }).then((result) => result.data);
+      await activityResetFn({ id: activityId, total }).then(
+        (result) => result.data,
+      );
     },
     // meta is used for success/failed notification on mutation result
     meta: {
@@ -72,7 +75,6 @@ export function useActivityIncrease() {
   return mutation.mutateAsync;
 }
 
-
 /**
  * Mutation for "decreasing" an Activity.
  */
@@ -86,6 +88,24 @@ export function useActivityDecrease() {
     // meta is used for success/failed notification on mutation result
     meta: {
       action: ["Activity", "Decrease"],
+    },
+  });
+
+  // if needed can return the whole mutation, like loading, and error state
+  return mutation.mutateAsync;
+}
+
+/**
+ * Mutation for "updating" an Activity.
+ */
+export function useActivityUpdate() {
+  const mutation = useMutation({
+    mutationFn: async (params: { id: string; updates: Partial<Activity> }) => {
+      await activityUpdateFn(params).then((result) => result.data);
+    },
+    // meta is used for success/failed notification on mutation result
+    meta: {
+      action: ["Activity", "Update"],
     },
   });
 

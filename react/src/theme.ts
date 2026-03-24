@@ -43,7 +43,7 @@ const ButtonStyle = defineStyleConfig({
     outline: {
       border: "3px dashed",
       //   color: "red.500",
-        borderColor: "brand.500",
+      borderColor: "brand.500",
     },
     anything: {
       //   backgroundColor: "red",     // "red" -- just the css string
@@ -76,7 +76,7 @@ const theme = extendTheme(
   // set "primary"/default color scheme to be our custom
   withDefaultColorScheme({
     colorScheme: "brand",
-  })
+  }),
 );
 
 export default theme;

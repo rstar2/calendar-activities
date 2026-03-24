@@ -1,5 +1,5 @@
-import React, { useCallback } from "react";
-import { useMap } from "react-use";
+import React, { useCallback, useState } from "react";
+import { useMap, useLongPress } from "react-use";
 import {
   HStack,
   List,
@@ -16,10 +16,94 @@ import {
   useActivityIncrease,
   useActivityDecrease,
   useActivityReset,
+  useActivityUpdate,
 } from "../cache/activities";
 import { type Activity, getIcon } from "../types/Activity";
 import Expander from "./Expander";
 import TooltipMobile from "./TooltipMobile";
+import DialogActivityAddOrEdit from "./DialogActivityAddOrEdit";
+
+interface ActivityItemProps {
+  activity: Activity;
+  isAuth: boolean;
+  disabled: Record<string, true>;
+  onIncrement: (activity: Activity) => void;
+  onDecrement: (activity: Activity) => void;
+  onReset: (activity: Activity) => void;
+  onEdit: (activity: Activity) => void;
+}
+
+function ActivityItem({
+  activity,
+  isAuth,
+  disabled,
+  onIncrement,
+  onDecrement,
+  onReset,
+  onEdit,
+}: ActivityItemProps) {
+  const longPressEvent = useLongPress(() => isAuth && onEdit(activity), {
+    delay: 500,
+    isPreventDefault: true,
+  });
+
+  return (
+    <ListItem>
+      <HStack>
+        <Text
+          {...longPressEvent}
+          cursor={isAuth ? "pointer" : "default"}
+          userSelect="none"
+        >
+          {formatActivity(activity)}
+        </Text>
+        {isAuth && (
+          <>
+            <Expander />
+            {!("left" in activity) && (
+              <TooltipMobile label="Increment">
+                <IconButton
+                  variant="ghost"
+                  isRound
+                  isDisabled={!isAuth || disabled[activity.id]}
+                  onClick={() => onIncrement(activity)}
+                  icon={<AddIcon />}
+                  aria-label="increment"
+                />
+              </TooltipMobile>
+            )}
+
+            {"left" in activity && (
+              <TooltipMobile label="Decrement">
+                <IconButton
+                  variant="ghost"
+                  isRound
+                  isDisabled={!isAuth || disabled[activity.id]}
+                  onClick={() => onDecrement(activity)}
+                  icon={<MinusIcon />}
+                  aria-label="decrement"
+                />
+              </TooltipMobile>
+            )}
+
+            {activity.cycle !== undefined && (
+              <TooltipMobile label="Reset">
+                <IconButton
+                  variant="ghost"
+                  isRound
+                  isDisabled={!isAuth || disabled[activity.id]}
+                  onClick={() => onReset(activity)}
+                  icon={<RepeatIcon />}
+                  aria-label="reset"
+                />
+              </TooltipMobile>
+            )}
+          </>
+        )}
+      </HStack>
+    </ListItem>
+  );
+}
 
 function Activities() {
   const {
@@ -35,6 +119,9 @@ function Activities() {
   const activityIncrement = useActivityIncrease();
   const activityDecrement = useActivityDecrease();
   const activityReset = useActivityReset();
+  const activityUpdate = useActivityUpdate();
+
+  const [editingActivity, setEditingActivity] = useState<Activity | null>(null);
 
   const handleActivityIncrement = useCallback(
     ({ id }: Activity) => {
@@ -60,78 +147,56 @@ function Activities() {
     [setDisabled, removeDisabled, activityReset],
   );
 
+  const handleEditDialogClose = useCallback(
+    async (updates?: Partial<Activity>) => {
+      if (editingActivity && updates) {
+        await activityUpdate({ id: editingActivity.id, updates });
+      }
+      setEditingActivity(null);
+    },
+    [editingActivity, activityUpdate],
+  );
+
   return (
-    <List spacing={3}>
-      {!activities
-        ? Array.from({ length: 5 }).map((_, index) => (
-            <Skeleton key={index} h={6} />
-          ))
-        : activities.map((activity) => (
-            <ListItem key={activity.id}>
-              <HStack>
-                <Text>{formatActivity(activity)}</Text>
-                {isAuth && (
-                  <>
-                    <Expander />
-                    {activity.left === undefined && (
-                      <TooltipMobile label="Increment">
-                        <IconButton
-                          variant="ghost"
-                          isRound
-                          isDisabled={!isAuth || disabled[activity.id]}
-                          onClick={() => handleActivityIncrement(activity)}
-                          icon={<AddIcon />}
-                          aria-label="increment"
-                        />
-                      </TooltipMobile>
-                    )}
+    <>
+      <List spacing={3}>
+        {!activities
+          ? Array.from({ length: 5 }).map((_, index) => (
+              <Skeleton key={index} h={6} />
+            ))
+          : activities.map((activity) => (
+              <ActivityItem
+                key={activity.id}
+                activity={activity}
+                isAuth={isAuth}
+                disabled={disabled}
+                onIncrement={handleActivityIncrement}
+                onDecrement={handleActivityDecrement}
+                onReset={handleActivityReset}
+                onEdit={setEditingActivity}
+              />
+            ))}
+      </List>
 
-                    {activity.left !== undefined && (
-                      <TooltipMobile label="Decrement">
-                        <IconButton
-                          variant="ghost"
-                          isRound
-                          isDisabled={!isAuth || disabled[activity.id]}
-                          onClick={() => handleActivityDecrement(activity)}
-                          icon={<MinusIcon />}
-                          aria-label="decrement"
-                        />
-                      </TooltipMobile>
-                    )}
-
-                    {activity.cycle !== undefined && (
-                      <TooltipMobile label="Reset">
-                        <IconButton
-                          variant="ghost"
-                          isRound
-                          isDisabled={!isAuth || disabled[activity.id]}
-                          onClick={() => handleActivityReset(activity)}
-                          icon={<RepeatIcon />}
-                          aria-label="reset"
-                        />
-                      </TooltipMobile>
-                    )}
-                  </>
-                )}
-              </HStack>
-            </ListItem>
-          ))}
-    </List>
+      {isAuth && editingActivity && (
+        <DialogActivityAddOrEdit
+          open={!!editingActivity}
+          activity={editingActivity}
+          onClose={handleEditDialogClose}
+        />
+      )}
+    </>
   );
 }
 
 const formatActivity = (activity: Activity): React.ReactNode => {
-  return (
-    getIcon(activity) +
-    " " +
-    activity.name +
-    " - " +
-    (activity.current !== undefined
+  const count =
+    "current" in activity && activity.current !== undefined
       ? activity.current
-      : activity.left !== undefined
+      : "left" in activity && activity.left !== undefined
       ? " Left " + activity.left
-      : " Total " + activity.total)
-  );
+      : " Total " + activity.total;
+  return getIcon(activity) + " " + activity.name + " - " + count;
 };
 
 export default Activities;
